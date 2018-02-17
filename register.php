@@ -12,6 +12,7 @@
 <!-- Latest compiled JavaScript -->
 <script src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/register.js"></script>
+<!--<script src='https://www.google.com/recaptcha/api.js'></script>-->
 </head>
 <body>
 <?php #include "header.php";
@@ -32,9 +33,9 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 	#If everything is fine - Add the user.
 		try	{
 			$sql="insert into users
-			(user_id,disp_name,encrypt_pwd,email_addr,status)
+			(user_id,disp_name,encrypt_pwd,email_addr,status,frgt_pwd_id)
 			values
-			('".$userid."','".$name."','".$hashed_pwd."','".$mail."','A')";
+			('".$userid."','".$name."','".$hashed_pwd."','".$mail."','A',md5('".$userid."'))";
 			
 			$conn->exec($sql);
 			$message = "Registration successful";
@@ -43,7 +44,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 			header("location:user_preference.php");		#On successful registration, redirect to dashboard
 		}
 		catch(PDOException $e)	{
-			$message = "Registration failed ".$e->getMessage();
+			$message = "Registration failed ";
 		}
 	}
 	else
@@ -122,6 +123,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 						<span id="user-error" class="col-3-data"></span>
 					</div>
 				</div></br>
+				<!--
+				<div id="captcha-div">
+					<div class="g-recaptcha form-group" data-sitekey="6LcnWUMUAAAAAKDPfsZ-kzcbQoU0mOECoVmCRZZn"></div>
+				</div></br>-->
 				<div id="button-section">
 					<input id="reg-button" class="btn btn-default nav-button" type="submit" value="Register" />
 					<input id="res-button" class="btn btn-default nav-button" type="reset" value="Reset" />
@@ -130,81 +135,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 			</form>
 	</div>	
 			
-	
-	
-				<!--
-				<tr>
-					<td class="col-1">Mobile: </td>
-					<td class="col-2">
-						<input class="inp-txt" type="text" id="phone" name="mob" value="<?php #echo $phone; ?>" onfocus="showTip(6)" onfocusout="validateMob(this.value,'mob-error')"/>
-					</td>
-					<td>
-						<span class="col-3-data" id="mob-error"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-1">How old are you? </td>
-					<td class="col-2">
-						<input class="inp-txt" type="text" id="age" name="age" value="<?php #echo $age; ?>">
-					</td>
-					<td>
-						<span class="col-3-data"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-1">Gender: </td>
-					<td class="col-2">
-						<input class="inp-txt gender-sec" type="radio" name="gender" value="male" >Male
-						<input class="inp-txt gender-sec" type="radio" name="gender" value="female" >Female
-					</td>
-					<td>
-						<span class="col-3-data"></span>
-					</td>
-				</tr>
-				<tr>
-					<td class="col-1">Tell us your Location: </td>
-					<td class="col-2">
-						<select class="inp-txt" id="countries" name="location" >
-							<option>USA</option>
-							<option>India</option>
-							<option>Australia</option>
-							<option>Canada</option>
-							<option>Japan</option>
-							<option>China</option>
-							<option>New Zealand</option>
-							<option>South Africa</option>
-						</select>
-					</td>
-					<td>
-						<span class="col-3-data"></span>
-					</td>
-						
-				</tr>
-				<tr><td class="col-1">Tell something about yourself: </td>
-				
-			
-			<td class="col-2">
-				<textarea class="form-control" rows="2" id="desc-box" name="desc" placeholder="Your description" onfocus="showTip(7)"></textarea>
-			</td>
-			
-			<tr>
-			<td>
-				<span class="col-3-data"></span>
-			</td>
-			</tr>
-			
-			</table>
-			-->
-			
-		<!--	<button id="reg-button" onclick="postData(document.getElementById('name').value,
-																	   document.getElementById('user').value,
-																	   document.getElementById('pwd').value,
-																	   document.getElementById('mail').value,
-																	   document.getElementById('phone').value,
-																	   document.getElementById('age').value,
-																	   document.getElementById('countries').value,
-																	   document.getElementById('desc-box').value)">Register</button>-->
-		
 	</div>
 <?php #include "footer.php"; ?>
 </body>
