@@ -121,7 +121,7 @@ $(document).ready(function()	{
 				return xhr;
 			},
 			type:"post",
-			url:"upload_image.php",
+			url:"image_upload.php",
 			dataType:"json",
 			data: new FormData(this), 
 			contentType: false,       
