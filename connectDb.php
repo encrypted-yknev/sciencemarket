@@ -1,11 +1,13 @@
 <?php
+
 /*	Connection parameters to connect to mysqlDb */
 $username="root";
-$password="mysqlroot";
+$password="123";
 $servername="localhost";
+$dbname = "smdev_test"; //Set your database name here. No hardcoding.
 
 try	{
-	$conn=new PDO("mysql:host=$servername;dbname=testdb",$username,$password);
+	$conn=new PDO("mysql:host=$servername;dbname=$dbname",$username,$password);
 	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }
 
