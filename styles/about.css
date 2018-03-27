@@ -1,0 +1,39 @@
+.team-img	{
+	width:150px;
+	height:150px;
+	border:1px solid #ddd;
+	border-radius:80px;
+	margin:0 auto;
+}
+.team-section	{
+	text-align:center;
+}
+.caption-content span {
+	font-family: 'Open Sans Condensed', sans-serif;
+	font-size:22px;
+}
+.abt-section	{
+	font-family: 'IBM Plex Sans Condensed', sans-serif;
+	font-size:16px;
+	width:70%;
+	margin:0 auto;
+}
+.quotes	{
+	background-image:url('https://s3.amazonaws.com/sciencemarket.org/uploads/images/left-quote.svg');
+}
+#team-1,#team-2,#team-3,#team-4	{
+	background-position:center;
+	background-size:cover;
+}
+#team-1	{
+	background-image:url('https://s3.amazonaws.com/sciencemarket.org/uploads/team/image1.jpg');
+}
+#team-2	{
+	background-image:url('https://s3.amazonaws.com/sciencemarket.org/uploads/team/image2.jpg');
+}
+#team-3	{
+	background-image:url('https://s3.amazonaws.com/sciencemarket.org/uploads/team/image3.jpg');
+}
+#team-4	{
+	background-image:url('https://s3.amazonaws.com/sciencemarket.org/uploads/team/image4.png');
+}
