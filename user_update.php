@@ -9,7 +9,7 @@ $request_type=htmlspecialchars(stripslashes(trim($_REQUEST["request_type"])));
 $user_dtls=array();
 $user_dtls["request_type"]=$request_type;
 $user_dtls["user_id"]=$_SESSION['user'];
-
+$user=$_SESSION['user'];
 if($request_type == 1)	{
 	$user=addslashes(htmlspecialchars(stripslashes(trim($_REQUEST["user"])),ENT_QUOTES));
 	if(strlen(trim($user))==0)
