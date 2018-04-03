@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"> 
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Science Market : Get started. Register here.</title>
 <link rel="stylesheet" type="text/css" href="styles/register.css">
@@ -21,22 +21,22 @@ include "connectDb.php";		#connect to mysql database.
 $name=$userid=$pwd=$repwd=$mail="";					#Variables to store input values.
 $message="";
 if($_SERVER["REQUEST_METHOD"]=="POST")	{
-	
+
 	#Check for proper name - empty/invalid characters
 	$name=htmlspecialchars(stripslashes(trim($_POST['name'])));
 	$userid=htmlspecialchars(stripslashes(trim($_POST['user'])));
 	$pwd=htmlspecialchars(stripslashes(trim($_POST['pwd'])));
 	$hashed_pwd=md5($pwd);
 	$mail=htmlspecialchars(stripslashes(trim($_POST['mail'])));
-	
+
 	if(!empty($name) && !empty($userid) && !empty($hashed_pwd) && !empty($mail))	{
 	#If everything is fine - Add the user.
 		try	{
 			$sql="insert into users
-			(user_id,disp_name,encrypt_pwd,email_addr,status,frgt_pwd_id)
+			(user_id,disp_name,encrypt_pwd,email_addr,status)
 			values
-			('".$userid."','".$name."','".$hashed_pwd."','".$mail."','A',md5('".$userid."'))";
-			
+			('".$userid."','".$name."','".$hashed_pwd."','".$mail."','A')";
+
 			$conn->exec($sql);
 			$message = "Registration successful";
 			session_start();
@@ -68,12 +68,12 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 			</div></br>
 			<div id="main-err-message"><?php echo $message; ?></div></br>
 			<form class="form-horizontal" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" name="user-form" method="post">
-				
+
 				<div class="form-group">
 					<label class="control-label col-sm-4 form-label" for="name">Enter full name</label>
 					<div class="col-sm-4">
-						<input class="form-control" id="name" type="text" name="name" onfocus="$('#msg-1').show();" onblur="$('#msg-1').hide();" value="<?php echo $name; ?>" 
-							onfocusout="validateData(this.value,'name-error')" /> 
+						<input class="form-control" id="name" type="text" name="name" onfocus="$('#msg-1').show();" onblur="$('#msg-1').hide();" value="<?php echo $name; ?>"
+							onfocusout="validateData(this.value,'name-error')" />
 						<div class="msg-info" id="msg-1">Enter valid name. Should contain only spaces and alphabets</div>
 					</div>
 					<div class="col-sm-4 message-section">
@@ -83,7 +83,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 				<div class="form-group">
 					<label class="control-label col-sm-4 form-label" for="user">Choose UserID</label>
 					<div class="col-sm-4">
-						<input class="form-control" type="text" id="user" name="user" onfocus="$('#msg-2').show();" onblur="$('#msg-2').hide();" value="<?php echo $userid; ?>" 
+						<input class="form-control" type="text" id="user" name="user" onfocus="$('#msg-2').show();" onblur="$('#msg-2').hide();" value="<?php echo $userid; ?>"
 							 onfocusout="validateUser(this.value)" />
 						<div class="msg-info" id="msg-2">Username must be unique</div>
 					</div>
@@ -101,7 +101,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 					<div class="col-sm-4 message-section">
 						<span id="pwd-error" class="col-3-data"></span>
 					</div>
-				</div>			
+				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-4 form-label" for="repwd">Re-enter password</label>
 					<div class="col-sm-4">
@@ -112,7 +112,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 					<div class="col-sm-4 message-section">
 						<span id="repass-error" class="col-3-data"></span>
 					</div>
-				</div>			
+				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-4 form-label" for="mail">Email</label>
 					<div class="col-sm-4">
@@ -133,8 +133,8 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 					<a href="index.php" id="home-button" class="btn btn-primary nav-button">Home</a>
 				</div>
 			</form>
-	</div>	
-			
+	</div>
+
 	</div>
 <?php #include "footer.php"; ?>
 </body>
