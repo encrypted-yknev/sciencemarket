@@ -77,11 +77,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 	}
 }
 else{
-	$id= 4;
-	$fpstatus = "Y";
-	$salt = "sci-market-pass-reset";
-	$fpkey = sha1($id+$salt+time());
-	$user_fp_update="UPDATE users SET fpstatus= 'Y', fpkey = '".$fpkey."' WHERE id = '".$id."'";
-	echo $user_fp_update;
+	die("Invalid access");
 }
  ?>

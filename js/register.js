@@ -1,6 +1,6 @@
 /*function showTip(x)	{
 	var txt="";
-	if(x==1)	
+	if(x==1)
 		txt="Please write your full name separated by spaces. Only alphabets and spaces are allowed.";
 	else if(x==2)
 		txt="Choose a unique user id. Avoid using special characters. '_' can be used. ";
@@ -32,7 +32,7 @@ function validateData(data,id)	{
 		else
 			x="<span class='glyphicon glyphicon-ok'></span>";
 	}
-	
+
 	if(checked==false)	{
 		document.getElementById("name").value="";
 		document.getElementById(id).style.background="#FFEBEB";
@@ -47,7 +47,7 @@ function validateData(data,id)	{
 }
 
 function validatePassFld(data,id)	{
-	var x="",checked=true; 
+	var x="",checked=true;
 	if(data.length==0)	{
 		x="Password cannot be empty";
 		checked=false;
@@ -58,7 +58,7 @@ function validatePassFld(data,id)	{
 	}
 	else
 		x="<span class='glyphicon glyphicon-ok'></span>";
-	
+
 	if(checked==false)	{
 		document.getElementById("pwd").value="";
 		document.getElementById(id).style.background="#FFEBEB";
@@ -69,7 +69,7 @@ function validatePassFld(data,id)	{
 		document.getElementById(id).style.color="#46A143";
 		//document.getElementById(id).style.border-radius="5px";
 	}
-	
+
 	document.getElementById(id).innerHTML=x;
 }
 
@@ -97,12 +97,12 @@ function validateRePassFld(data1,data2,id)	{
 		document.getElementById(id).style.color="#46A143";
 		//document.getElementById(id).style.border-radius="5px";
 	}
-	
+
 	document.getElementById(id).innerHTML=x;
 }
 
 function validateEmail(data,id)	{
-	
+
 }
 
 function validateMob(data,id)	{
@@ -128,7 +128,7 @@ function validateMob(data,id)	{
 		document.getElementById(id).style.color="#46A143";
 		//document.getElementById(id).style.border-radius="5px";
 	}
-	
+
 	document.getElementById(id).innerHTML=x;
 }
 
@@ -139,6 +139,7 @@ function validateUser(data)	{
 			url:"check_user.php",
 			data:
 			{
+				"type":"username",
 				"user":data
 			},
 			success:function(result)	{
@@ -160,8 +161,42 @@ function validateUser(data)	{
 	);
 }
 
+function validateEmail(data)	{
+	$.ajax(
+		{
+			type:"post",
+			url:"check_user.php",
+			data:
+			{
+				"type":"email",
+				"mail":data
+			},
+			success:function(result)	{
+				if(result=="0")	{
+					$("#email-error").html("<span class='glyphicon glyphicon-ok'></span>");
+					$("#email-error").css({"background":"#fff","color":"#46A143"});
+				}
+				else if(result=="1")	{
+					$("#mail").val("");
+					$("#email-error").html("Email-Id already exists.");
+					$("#email-error").css({"background":"#FFEBEB","color":"#000"});
+				}
+				else if(result=="2")	{
+					$("#mail").val("");
+					$("#email-error").html("Enter a valid Email-Id");
+					$("#email-error").css({"background":"#FFEBEB","color":"#000"});
+				}
+				else	{
+					$("#email-error").html(result);
+					$("#email-error").css({"background":"#FFEBEB","color":"#000"});
+				}
+			}
+		}
+	);
+}
+
 function postData(name,user,pwd,mail,phone,age,countries,desc)	{
-	
+
 	$.ajax(
 	{
 		type:"post",
@@ -176,7 +211,7 @@ function postData(name,user,pwd,mail,phone,age,countries,desc)	{
 			"age":age,
 			"location":countries,
 			"desc":desc
-			
+
 		},
 		success:function(result)	{
 			$('#tip-section').html(result);
