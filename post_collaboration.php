@@ -110,29 +110,6 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 		else	{
 			echo "2";
 		}
-		/* $sql_call_sp_user_updt="call user_update('".$_SESSION['user']."',".$request_type.",'".$user_dtls_json."',@err_cd,@err_desc)";
-					
-		$stmt_call_sp_user_updt=$conn->prepare($sql_call_sp_user_updt);
-		$stmt_call_sp_user_updt->execute();
-		
-		$row_sp = $conn->query("select @err_cd as error_code,@err_desc as error_desc")->fetch();
-		
-		$error_code=$row_sp['error_code'];
-		$error_desc=$row_sp['error_desc'];
-		if(!strcmp($error_code,'00000'))	{
-			if($user != $_SESSION['user'])
-				$userid=$user;
-			else
-				$userid=$_SESSION['user'];
-			include "session.php";
-			if($request_type == 4)
-				echo "<div class='alert alert-warning msg-profile'>Account de-activated</div>";
-			else
-				echo "<div class='alert alert-success msg-profile'>Details updated successfully</div>";
-		}
-		else	{
-			echo "<div class='alert alert-danger msg-profile'>".$error_desc."</div>";
-		} */
 		
 	}
 	catch(PDOException $e)	{
@@ -143,4 +120,5 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
 else	{
 	echo "no";
 }
+
  ?>

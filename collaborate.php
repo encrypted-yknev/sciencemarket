@@ -32,7 +32,7 @@ include "forum/functions/get_time_offset.php";
 <div id="block"></div>
 <?php include "header.php"; ?>
 	
-	<div class="container">
+	<div class="container" style="min-height:500px;">
 		<div id="side-nav">
 			<table border="0">
 				<tr>
@@ -82,7 +82,7 @@ include "forum/functions/get_time_offset.php";
 			<h2 class="main-title">Collaborate</h2>
 		</div></br>
 		<div id="main-body">
-			<table class="table" border="0">
+			<table class="table" >
 				<tbody>
 					<tr>
 						<td>
@@ -106,13 +106,13 @@ include "forum/functions/get_time_offset.php";
 			</table>
 		</div>
 		<div id="main-cont" class="row" style="display:none;">
-			<div class="col-sm-2" style="background-color:#ddd; height:300px;" >
+			<div class="col-sm-2" style="background-color:#ddd;" >
 				<div class="col-section-side" style="margin-top:15px;">
 					<span class="text1"><strong>Collaborations</strong></span>
 				</div></br>
 				<div class="auth-section-side">
 					<span class="text2"><strong>Authorship</strong></span>
-				</div>
+				</div></br>
 			</div>
 			<div class="col-sm-10" style="background-color:#f9f9f9; height:auto; padding:0px !important" >
 				<div class="right-head">
