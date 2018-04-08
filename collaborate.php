@@ -87,21 +87,27 @@ include "forum/functions/get_time_offset.php";
 					<tr>
 						<td>
 							<div class="col-section div-section">
-								<span class="div-text text1"><strong>Collaborations</strong></span>
-								<div class="sub-text">
-									<span>Are you coming up with new idea to experiment things? Here's your chance to request for assistance</span>
-								</div>
+								<span class="div-text text1"><strong>Collaborations</strong></span>								
 							</div>
 						</td>
 						<td>
 							<div class="auth-section div-section">
-								<span class="div-text text2"><strong>Authorship</strong></span>
-								<div class="sub-text">
-									<span>Want to share authorship in research papers? Check out authorship proposals</span>
-								</div>
+								<span class="div-text text2"><strong>Authorship</strong></span>								
 							</div>
 						</td>
 					</tr>
+                    <tr>
+                        <td>
+                            <div class="sub-text">
+								<span>Are you coming up with new idea to experiment things? Here's your chance to request for assistance</span>
+							</div>
+                        </td>
+                        <td>
+                            <div class="sub-text">
+								<span>Want to share authorship in research papers? Check out authorship proposals</span>
+							</div>
+                        </td>
+                    </tr>
 				</tbody>
 			</table>
 		</div>

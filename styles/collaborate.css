@@ -31,9 +31,14 @@
 	font-size:20px;
 }
 .sub-text	{
-	display:none;
-	font-size:13px;
-	background-color:rgba(0,0,0,0.5);
+    text-align:center;
+    font-style:italic;
+	/*display:none;*/
+	font-size:15px;
+    color:#aaa;
+    font-family:"Calibri", Arial, sans-serif;
+    margin-left:10px;
+    margin-right:10px;
 }
 .col-section,.col-section-side	{
 	background-color:#29934D;
