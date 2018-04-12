@@ -175,7 +175,7 @@ include "forum/functions/get_time_offset.php";
                             }                        
                         }
                         else    {
-                            echo "<div class='no-list'>Collaborations is empty</div>";
+                            echo "<div class='no-list'>No collaborations proposed</div>";
                         }  
                     }
                     catch(PDOException $e)  {
@@ -243,7 +243,7 @@ include "forum/functions/get_time_offset.php";
                         }                        
                     }
                     else    {
-                        echo "<div class='no-list'>Collaborations is empty</div>";
+                        echo "<div class='no-list'>No authorship proposed</div>";
                     }
                 }
                 catch(PDOException $e)  {
