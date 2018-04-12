@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href="styles/footer.css">
 <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <link rel="stylesheet" href="styles/bootstrap.min.css">
 <!-- Latest compiled JavaScript -->
 <script src="js/bootstrap.min.js"></script>
@@ -29,6 +30,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 	$mail=htmlspecialchars(stripslashes(trim($_POST['mail'])));
 
 	if(!empty($name) && !empty($userid) && !empty($hashed_pwd) && !empty($mail))	{
+		$secret = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; //Replace with our own, these keys are localhost keys. Replace both this key and the one in HTML. 
+		$verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
+        $responseData = json_decode($verifyResponse);
+		if($responseData->success){
 		if(filter_var($mail, FILTER_VALIDATE_EMAIL)){
 
 		try	{
@@ -51,6 +56,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 	else{
 		$message="Invalid email";
 	}
+}
+else{
+	$message="Captcha Invalid, Try again";
+}
 }
 	else
 		$message = "Uh oh!! All fields are mandatory";
@@ -126,10 +135,17 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 						onfocusout="validateEmail(this.value)" />
 						<div class="msg-info" id="msg-5">Enter valid email of format abc@xyz.pqr</div>
 					</div>
+
+
 					<div class="col-sm-4 message-section">
 						<span id="email-error" class="col-3-data"></span>
 					</div>
 				</div></br>
+				<div class="form-group">
+					<div class="col-sm-6 col-sm-offset-3">
+					<div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+				</div>
+				</div>
 				<!--
 				<div id="captcha-div">
 					<div class="g-recaptcha form-group" data-sitekey="6LcnWUMUAAAAAKDPfsZ-kzcbQoU0mOECoVmCRZZn"></div>
