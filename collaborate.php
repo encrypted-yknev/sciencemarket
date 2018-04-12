@@ -28,6 +28,7 @@ include "forum/functions/get_time_offset.php";
 <script src="js/bootstrap.min.js"></script>
 <script type="text/javascript" src="js/header.js"></script></head>
 <script type="text/javascript" src="js/collaborate.js"></script></head>
+
 <body onload="refreshNotify()">
 <div id="block"></div>
 <?php include "header.php"; ?>
@@ -79,7 +80,7 @@ include "forum/functions/get_time_offset.php";
 			</div>
 		</div></br>
 		<div class="head-section">
-			<h2 class="main-title">Collaborate</h2>
+		<!--	<h2 class="main-title">Collaborate</h2>-->
 		</div></br>
 		<div id="main-body">
 			<table class="table" >
@@ -126,10 +127,129 @@ include "forum/functions/get_time_offset.php";
 					<span class="head-nav2"></span>
 				</div></br>
 				<div id="col-cards">
-					<h2>This section will contain list of collaboration job cards</h2>
+                    <?php
+                    try {
+                        $sql_fetch_collab = "select * from collaborations where post_typ = 'C'";
+                        $stmt_fetch_collab = $conn->prepare($sql_fetch_collab);
+                        $stmt_fetch_collab->execute();
+                        if($stmt_fetch_collab->rowCount() > 0)  {
+                            while($row_collab = $stmt_fetch_collab->fetch())    {
+                                $post_id=$row_collab['post_id'];  
+                                $post_title=$row_collab['post_title'];  
+                                $post_univ=$row_collab['src_university'];  
+                                $post_loc=$row_collab['src_location'];  
+                                $post_desc3=$row_collab['post_desc3'];  
+                                $post_desc4=$row_collab['post_desc4'];  
+                                ?>
+                                <div id="collab-card-<?php echo $post_id; ?>" class="card" >
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-title">Title</div>
+                                            <?php echo $post_title; ?>
+                                        </div>
+                                    </div>
+                                    <div class="row">                                        
+                                        <div class="col-sm-6">
+                                            <div class="card-title">University</div>
+                                            <?php echo $post_univ; ?>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card-title">Location</div>
+                                            <?php echo $post_loc; ?>
+                                        </div>                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="card-title">Skillsets required</div>
+                                            <?php echo $post_desc3; ?>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card-title">Timeline</div>
+                                            <?php echo $post_desc4; ?>
+                                        </div>                                        
+                                    </div></br>
+                                    <div class="btn-section"><a class="btn btn-primary btn-dtls" href="javascript:void(0)" onclick="">Details</a></div>
+                                
+                                </div>                  
+                                <?php  
+                            }                        
+                        }
+                        else    {
+                            echo "<div class='no-list'>Collaborations is empty</div>";
+                        }  
+                    }
+                    catch(PDOException $e)  {
+                        echo "Some error occurred";
+                    }                  
+                        ?>
 				</div>
 				<div id="auth-cards">
-					<h2>This section will contain list of authorship job cards</h2>
+					<!--<h2>This section will contain list of authorship job cards</h2> -->
+                <?php
+                try {
+                    $sql_fetch_collab = "select * from collaborations where post_typ = 'A'";
+                    $stmt_fetch_collab = $conn->prepare($sql_fetch_collab);
+                    $stmt_fetch_collab->execute();
+                    if($stmt_fetch_collab->rowCount() > 0)  {
+                        while($row_collab = $stmt_fetch_collab->fetch())    {
+                            $post_auth_id=$row_collab['post_id'];  
+                            $post_auth_title=$row_collab['post_title'];  
+                            $post_author_id=$row_collab['authorship_id'];
+                            $post_auth_univ=$row_collab['src_university'];  
+                            $post_auth_loc=$row_collab['src_location'];  
+                            $post_auth_desc3=$row_collab['post_desc3'];  
+                            $post_auth_desc4=$row_collab['post_desc4'];  
+                            ?>
+                            <div id="auth-card-<?php echo $post_id; ?>" class="card" >
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="card-title">Authorship ID</div>
+                                        <?php echo $post_author_id; ?>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-sm-12">
+
+                                        <div class="card-title">Title</div>
+
+                                        <?php echo $post_auth_title; ?>
+                                    </div>
+                                </div>
+                                <div class="row">                                        
+                                    <div class="col-sm-6">
+                                        <div class="card-title">University</div>
+                                        <?php echo $post_auth_univ; ?>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card-title">Location</div>
+                                        <?php echo $post_auth_loc; ?>
+                                    </div>                                        
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="card-title">Skillsets required</div>
+                                        <?php echo $post_auth_desc3; ?>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="card-title">Timeline</div>
+                                        <?php echo $post_auth_desc4; ?>
+                                    </div>                                        
+                                </div></br>
+                                <div class="btn-section"><a class="btn btn-primary btn-dtls" href="javascript:void(0)" onclick="">Details</a></div>
+                            
+                            </div>                  
+                            <?php  
+                        }                        
+                    }
+                    else    {
+                        echo "<div class='no-list'>Collaborations is empty</div>";
+                    }
+                }
+                catch(PDOException $e)  {
+                    echo "Some error occurred";
+                }                    
+                    ?>
 				</div>
 				<div id="col-form">
 					<div class="form-group" style="width:80%; margin-left:20px;">
