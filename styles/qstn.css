@@ -107,9 +107,8 @@ div	{
 }
 
 .alert-msg-section	{
-	padding:1%;
-	/*border:1px solid #FF8383;*/
-	background-color:#FFEEEE;
+	padding:3px 5px !important;
+	font-weight:650;
 }
 
 #titl-subsection	{
@@ -330,21 +329,27 @@ div	{
 
 #tag-res span.tag-name	{
 	border-radius:3px;
-	color:#fff;
+	color:#23527c;
+	font-weight:650;
 	margin-right:5px;
-	background-color:#195971;
+	background-color:#CCE6EF;
 	cursor:pointer;
-	padding:3px;
+	padding:2px 4.5px;
+	font-family:'Calibri',Verdana,Helvetica,Arial,sans-serif;
 }
 
-#tag-res span.tag-name:after	{
-	border-radius:3px;
-	content:"x";
+#tag-res span.tag-name:hover	{
+	color:#CCE6EF;
+	background-color:#23527c;
+}
+/* #tag-res span.tag-name:after	{
+	border-radius:20px;
+	content:" x ";
 	color:#fff;
 	margin-left:8px;
-	background-color:#195971;
+	background-color:#23527c;
 	cursor:pointer;
-}
+} */
 .ask-qstn-desc	{
 	width:100%;
 	overflow:hidden;

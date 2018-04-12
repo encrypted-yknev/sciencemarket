@@ -7,10 +7,11 @@ $(document).ready(function()	{
 	$("#tag input").on("focusout",function()	{
 		var x=$.trim(this.value);
 		if(x) {
+			$("#alert-msg").html("");
 			focusOutCnt++;
 			$(".alert-msg-section").text(""); 
 			if(focusOutCnt==4)	{
-				$("#alert-msg").html("<span class='alert-msg-section'>No more tags allowed!</span>");
+				$("#alert-msg").html("<span class='alert-warning alert-msg-section'>No more tags allowed!</span>");
 				$(".q-tags").attr("disabled","disabled");
 			}
 			x=x.replace(/ /g,"-");
@@ -20,7 +21,7 @@ $(document).ready(function()	{
 		}
 		else	{
 			if(focusOutCnt==0)
-				$("#alert-msg").html("<span class='alert-msg-section'>Select at-least one tag</span>");
+				$("#alert-msg").html("<span class='alert-warning alert-msg-section'>Select at-least one tag</span>");
 				
 		}
 		this.value = ""; 
@@ -29,6 +30,7 @@ $(document).ready(function()	{
 	
 	
 	$(document).on("click",".tag-name",function()	{
+		$("#alert-msg").html("");
 		$(this).remove();
 		focusOutCnt--;
 		if(focusOutCnt < 4)	{
@@ -67,7 +69,7 @@ $(document).ready(function()	{
 		if(keyCode == 13)	{
 			var x=document.getElementById("user-qstn-tags").value;
 			if(x.length > 20)	{
-				$("#alert-msg").html("<span class='alert-msg-section'>Tag must be < 20 chars</span>");
+				$("#alert-msg").html("<span class='alert-danger alert-msg-section'>Tag name must be < 20 chars</span>");
 			}
 			else	{
 				x.replace(/ /g,"-");

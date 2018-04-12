@@ -47,7 +47,7 @@ else if($count_slash==4)
 				<a class="nav-link" href="<?php echo $slashes; ?>dashboard.php" title="User dashboard"><li class="nav-list">DASHBOARD</li></a>
 				<a class="nav-link" href="<?php echo $slashes; ?>forum" title="Question answer forum"><li class="nav-list">FORUM</li></a>
 				<a class="nav-link" href="<?php echo $slashes; ?>expert_connect.php" title="Connect with experts"><li class="nav-list">EXPERT CONNECT</li></a>
-				<a class="nav-link-wait" href="#" title="Collaboration coming soon..."><li class="nav-list">COLLABORATE</li></a>
+				<a class="nav-link" href="<?php echo $slashes; ?>collaborate.php" title="Propose collaboration and authorship"><li class="nav-list">COLLABORATE</li></a>
 				<a class="nav-link-wait" href="#" title="Favours coming soon..."><li class="nav-list">FAVOURS</li></a>
 			</ul>
 		</nav>
@@ -59,8 +59,8 @@ else if($count_slash==4)
 				<a class="nav-link" href="<?php echo $slashes; ?>forum"title="Question answer forum"><li class="nav-list">FORUM</li></a>
 				<a class="nav-link" id="more-link" href="javascript:void(0)" ><li class="nav-list">MORE&nbsp;<div class="down-arrow"></div></li></a>
 				<ul id="head-more-menu">
-					<a class="sub-link" href="expert_connect.php" title="Connect with experts"><li class="sub-nav-list">EXPERT CONNECT</li></a>
-					<a class="sub-link-wait" href="#"><li class="sub-nav-list" title="Collaboration coming soon...">COLLABORATE</li></a>
+					<a class="sub-link" href="<?php echo $slashes; ?>expert_connect.php" title="Connect with experts"><li class="sub-nav-list">EXPERT CONNECT</li></a>
+					<a class="sub-link" href="<?php echo $slashes; ?>collaborate.php"><li class="sub-nav-list" title="Propose collaboration and authorship">COLLABORATE</li></a>
 					<a class="sub-link-wait" href="#"><li class="sub-nav-list" title="Favours coming soon...">FAVOURS</li></a>
 				</ul>
 			</ul>

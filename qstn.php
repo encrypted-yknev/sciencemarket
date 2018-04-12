@@ -162,6 +162,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")	{
 <script src="ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="js/qstn.js"></script>
 <script type="text/javascript" src="js/header.js"></script>
+<!-- start 
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"></script>
+
+<link rel="stylesheet" 
+      href="//cdn.rawgit.com/balpha/pagedown/master/demo/browser/demo.css" />
+
+<style>
+    .wmd-button > span {
+        background-image: 
+          url('//cdn.rawgit.com/derobins/wmd/master/images/wmd-buttons.png');
+        background-repeat: no-repeat;
+        background-position: 0px 0px;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+    }
+</style>
+ end -->
+
 </head>
 <body onload="setTimeout(validateUser(<?php echo $logged_in; ?>),3000)">
 <div id="block"></div>
@@ -270,13 +292,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")	{
 				<script>
 					CKEDITOR.replace('qdesc');
 				</script>
+				
+<!-- 				<!-- start 
+				<div id="wmd-button-bar"></div>
+				<textarea id="wmd-input" class="wmd-input"></textarea>
+				<div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+				<script>
+					
+						var converter = Markdown.getSanitizingConverter();
+						var editor = new Markdown.Editor(converter);
+						editor.run();
+					
+				</script>
+				
+				<!-- end  -->
 				<span id="q-msg"></span></br></br>
 				Choose at-least 1 tag and max 4 tags : 
-				<div id="tag">
-					<input class="q-tags form-control" style="width:30%;" id="user-qstn-tags" type="text" name="q_tags" placeholder="Add tags. Press ENTER"  onfocus="getInputInfo(5)"/>&emsp;
-					<div id="alert-msg"></div></br></br>
-				</div>
-				<div id="tag-res"></div>
+				<div id="tag" class="row">
+					<div class="col-sm-6">
+						<input class="q-tags form-control" id="user-qstn-tags" type="text" name="q_tags" placeholder="Add tags. Press ENTER"  onfocus="getInputInfo(5)"/>
+					</div>
+					<div class="col-sm-6" id="alert-msg">
+					</div>
+				</div></br>
+				<div id="tag-res"></div></br>
 				<p><em>Before submitting, do check out for tips on how to use tags (Message box) by placing your cursor on the tags textbox and some related questions you might be looking for</em></p>
 				
 				<input type="hidden" id="tags" name="tags" /> 

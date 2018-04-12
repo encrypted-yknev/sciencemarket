@@ -4,6 +4,7 @@ $(document).ready(function()	{
 		$(".head-nav2").hide();
 		$("#auth-cards").hide();
 		$("#auth-form").hide();
+        $(".right-head .head-nav1").attr("onclick","showCollabView(1,1)");
 		$(".right-head .head-nav1").html("<span class='glyphicon glyphicon-plus'></span>&nbsp;PROPOSE COLLABORATION");
 		$(".head-nav1").show();
 		$("#col-cards").show();
@@ -14,21 +15,55 @@ $(document).ready(function()	{
 		$(".head-nav1").hide();
 		$("#col-cards").hide();
 		$("#col-form").hide();
+        $(".right-head .head-nav2").attr("onclick","showCollabView(2,1)");
 		$(".right-head .head-nav2").html("<span class='glyphicon glyphicon-plus'></span>&nbsp;PROPOSE AUTHORSHIP");
 		$(".head-nav2").show();
 		$("#auth-cards").show();
 		$("#main-cont").show();
 	});
+/*
 	$(".head-nav1").click(function()	{
 		$("#col-cards").hide();
+        $(".right-head .head-nav1").html("JOB CARDS");
 		$("#col-form").show();
 	});
 	$(".head-nav2").click(function()	{
 		$("#auth-cards").hide();
+        $(".right-head .head-nav2").html("JOB CARDS");
 		$("#auth-form").show();
-	});
+	});*/
 });
 
+function showCollabView(requestTyp,flag)   {
+    if(requestTyp == 1) {    
+        if(flag == 1)   {   
+            $("#col-cards").hide();
+            $(".right-head .head-nav1").attr("onclick","showCollabView(1,2)");
+            $(".right-head .head-nav1").html("JOB CARDS");
+		    $("#col-form").show();
+        }
+        else if(flag == 2)  {
+            $("#col-form").hide();        
+            $(".right-head .head-nav1").attr("onclick","showCollabView(1,1)");    
+            $("#col-cards").show();
+            $(".right-head .head-nav1").html("<span class='glyphicon glyphicon-plus'></span>&nbsp;PROPOSE COLLABORATION");		    
+        }
+    }
+    else if(requestTyp == 2)    {
+        if(flag == 1)   {   
+            $("#auth-cards").hide();
+            $(".right-head .head-nav2").attr("onclick","showCollabView(2,2)");
+            $(".right-head .head-nav2").html("JOB CARDS");
+		    $("#auth-form").show();
+        }
+        else if(flag == 2)  {
+            $("#auth-form").hide();            
+            $(".right-head .head-nav2").attr("onclick","showCollabView(2,1)");
+            $("#auth-cards").show();
+            $(".right-head .head-nav2").html("<span class='glyphicon glyphicon-plus'></span>&nbsp;PROPOSE AUTHORSHIP");		    
+        }
+    }
+}
 function postCollaboration(requestTyp)	{
 	/*	Collaboration */
 	var validFlag = true;
@@ -85,7 +120,7 @@ function postCollaboration(requestTyp)	{
 		}
 	}
 	if(validFlag)	{
-		//store details
+		//store details       
 		$.ajax({
 			type:"post",
 			url:"post_collaboration.php",
@@ -107,14 +142,14 @@ function postCollaboration(requestTyp)	{
 			},
 			beforeSend:function()	{
 				if(requestTyp==1)	{
-					$("#message-col").html("<div class='alert alert-info'>Posting...</div>");
+					$("#message-col").html("<div class='alert alert-info'>Posting...</div>")
 				}
 				else if(requestTyp==2)	{
 					$("#message-auth").html("<div class='alert alert-info'>Posting...</div>");
 				}
 			},
 			success:function(res)	{
-				if(res == "1")	{
+				if(res == "1")	{               
 					msg="<div class='alert alert-success'>Posted!</div>";
 				}
 				else if(res == "2")	{
@@ -122,15 +157,14 @@ function postCollaboration(requestTyp)	{
 				}
 				else 	{
 					msg="<div class='alert alert-danger'>Some error occurred. Please try again later!"+res+"</div>";
-				}					
+				}		
+                if(requestTyp==1)	{
+		            $("#message-col").html(msg);
+	            }
+	            else if(requestTyp==2)	{
+		            $("#message-auth").html(msg);	
+	            }			
 			}
 		});
-	}
-	if(requestTyp==1)	{
-		document.getElementById("message-col").innerHTML=msg;
-	}
-	else if(requestTyp==2)	{
-		document.getElementById("message-auth").innerHTML=msg;	
-	}
-		
+	}	
 }
