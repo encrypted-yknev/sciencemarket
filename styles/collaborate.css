@@ -92,3 +92,24 @@
 .table>tbody>tr>td  {
     border-top:none !important;
 }
+.card   {
+    display:inline-block;
+    max-width:400px; 
+    margin:5px 10px;
+    border:1px solid #2794C7;
+    box-shadow:1px 1px 1px rgba(0,0,0,0.8);
+    font-size:12px; 
+    padding:10px;
+    background-color:#fff;
+}
+
+.btn-dtls   {
+    padding:2px 4px !important; 
+    font-size:11px !important;
+}
+
+
+.card-title   {
+    color:#2794C7;
+    font-family:"Open sans condensed",Arial,sans-serif;
+}
