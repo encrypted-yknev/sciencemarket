@@ -7,65 +7,74 @@ else
 
 include "connectDb.php";
 $message="";
-
 $q_topic_id=$q_titl=$q_desc=$topic_id="";
 if ($_SERVER["REQUEST_METHOD"] == "POST")	{
 	$q_topic_id=(int)htmlspecialchars(stripslashes(trim($_POST['sub_topic'])));
 	$q_titl=htmlspecialchars(stripslashes(trim($_POST['qtitl'])));
 	$q_desc=trim($_POST['qdesc']);
 	$tags=htmlspecialchars(stripslashes(trim($_POST['tags'])));
-	#check for empty field)
-	if(!empty($q_topic_id) && !empty($q_titl) && !empty($q_desc) && !empty($tags))	{
-		$tag_list=explode(" ",$tags);
-		$tag_count=count($tag_list);
-		foreach($tag_list as $tag_name)	{
-			try	{
-				$sql_add_tag="insert into tags(tag_name,created_by) 
-							select * from (select '".$tag_name."','".$_SESSION['user']."') as temp
-							where not exists (select 1 from tags where tag_name='".$tag_name."')";
-				$conn->exec($sql_add_tag);
+	#check for empty field
+	$group_id=(int)trim($_POST['qgroups']);
+	$subgroup_list=$_POST['subgroups'];
+	$request_typ=0;
+	if(!empty($q_topic_id) && !empty($q_titl) && !empty($q_desc) && !empty($tags) && !empty($group_id))	{
+		if(($group_id > 0 && !empty($subgroup_list)) or ($group_id == 0))	{
+
+			if($group_id == 0)	{
+				$subgroups = "";
+			}
+			else	{
+				$len=count($subgroup_list);
+				$final_subgroup_list=$subgroup_list[0];
+				for($i=1; $i<$len; $i++)	{
+					$final_subgroup_list.=", ".$subgroup_list[$i];
+				}
+				$subgroups = $final_subgroup_list;
+			}
+			try		{
 				
-			}	
+				$sql_call_sp_post_qstn="call post_question(:user_id,
+														:request_typ,
+														:qstn_title,
+														:qstn_desc,
+														:qstn_topic_id,
+														:qstn_tags,
+														:group_id,
+														:subgroup_id_list,
+														@err_cd,
+														@err_desc)";
+
+				
+				$stmt_call_sp_post_qstn=$conn->prepare($sql_call_sp_post_qstn);
+				$stmt_call_sp_post_qstn->bindParam(':user_id',$_SESSION['user'],PDO::PARAM_STR, 50);			
+				$stmt_call_sp_post_qstn->bindParam(':request_typ',$request_typ,PDO::PARAM_INT);				
+				$stmt_call_sp_post_qstn->bindParam(':qstn_title',$q_titl,PDO::PARAM_STR, 3000); 
+				$stmt_call_sp_post_qstn->bindParam(':qstn_desc',$q_desc,PDO::PARAM_STR, 20000); 
+				$stmt_call_sp_post_qstn->bindParam(':qstn_topic_id',$q_topic_id,PDO::PARAM_INT); 
+				$stmt_call_sp_post_qstn->bindParam(':qstn_tags',$tags,PDO::PARAM_STR, 2000); 
+				$stmt_call_sp_post_qstn->bindParam(':group_id',$group_id,PDO::PARAM_INT);
+				$stmt_call_sp_post_qstn->bindParam(':subgroup_id_list',$subgroups,PDO::PARAM_STR, 20);
+				
+				$stmt_call_sp_post_qstn->execute();
+				$stmt_call_sp_post_qstn->closeCursor();
+				$row_sp = $conn->query("select @err_cd as error_code,@err_desc as error_desc")->fetch();
+				
+				$error_code=$row_sp['error_code'];
+				$error_desc=$row_sp['error_desc'];
+				if(!strcmp($error_code,'00000'))	{
+					$message = '<div id="no-qstn-msg-section" class="alert alert-success">Question posted</div>';
+					header("location:forum/myposts");
+				}
+				else	{
+					$message = '<div id="no-qstn-msg-section" class="alert alert-danger">'.$error_desc.'</div>';
+				} 
+			}
 			catch(PDOException $e)	{
-				$message = '<div class="alert alert-danger">Internal server error</div>';
-				return;
+				$message = $subgroups.' <div id="no-qstn-msg-section" class="alert alert-danger">Internal server error. Please try again later - '.$e->getMessage().'</div>';
 			}
 		}
-		try	{
-			
-			$sql="insert into questions (`qstn_titl`, `qstn_desc`, `qstn_status`, `topic_id`, `posted_by`)
-				values('".$q_titl."', '".$q_desc."','A',".$q_topic_id.",'".$_SESSION["user"]."')";
-			
-			$conn->exec($sql);
-		}
-		catch(PDOException $e)	{
-			$message = '<div class="alert alert-danger">Some Error occurred</div>';
-			return;
-		}
-		
-		try	{
-			$sql_fetch_qid="select qstn_id from questions where posted_by='".$_SESSION["user"]."' order by created_ts desc limit 1";
-			foreach($conn->query($sql_fetch_qid) as $row)	
-				$qid=$row["qstn_id"];
-			foreach($tag_list as $tag_name)	{
-				$sql_fetch_tag="select tag_id from tags where tag_name='".$tag_name."'";
-				$stmt_fetch_tag=$conn->prepare($sql_fetch_tag);
-				$stmt_fetch_tag->execute();
-				$row=$stmt_fetch_tag->fetch();
-				$tag_id=$row["tag_id"];
-				try	{
-					$sql_add_qstn_tag="insert into qstn_tags(qstn_id,tag_id) values(".$qid.",".$tag_id.")";
-					$conn->exec($sql_add_qstn_tag);
-				}
-				catch(PDOException $e)	{
-					$message = '<div class="alert alert-danger">Error occured while posting question</div>';
-				}
-			}
-			header("location:forum/myposts/");
-			
-		}
-		catch(PDOException $e)	{
-			$message = '<div class="alert alert-danger">Some Error occurred</div>';
+		else	{
+			$message = '<div id="no-qstn-msg-section" class="alert alert-danger">Please select subgroups</div>';
 		}
 	}
 	else {
@@ -139,6 +148,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")	{
 	return $value.' '.$string.' ago';
 }
 
+function get_group_list($subgroup_char) {
+    if($subgroup_char=='A' or $subgroup_char=='F') {
+        return "";
+    }
+    else    {
+        
+        if($subgroup_char=='U')
+            $group_id_inp=5;
+        else if($subgroup_char=='G')
+            $group_id_inp=4;
+        else if($subgroup_char=='P')
+            $group_id_inp=6;    
+        try {
+            $sql_fetch_group_id="select ExtractValue(subgroup_confg,'//groups/group_id') as 'group_ids' from groups where subgroup_ind='Y' and group_id=".$group_id_inp;
+            $stmt=$conn->prepare($sql_fetch_group_id);
+            $stmt->execute();
+            
+            while($result=$stmt->fetch())   {
+                $group_id_spaces = $row_group_id["group_ids"];
+            } 
+            $group_id_comma=str_replace(" ",",",$group_id_spaces);
+        }
+        catch(PDOException $e)  {
+            return "";
+        }
+        return $group_id_comma;
+    }
+}
 ?>
 
 
@@ -316,6 +353,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")	{
 					</div>
 				</div></br>
 				<div id="tag-res"></div></br>
+				Choose group where you want to post :
+				<select class="form-control" id="q-groups" style="width:50%;" name="qgroups" onchange="getSubgroups(this.value)" onfocus="getInputInfo(6)">
+					<?php
+						try	{	
+							$sql_fetch_groups="select group_id,group_nm from groups where subgroup_ind='N'";
+							foreach($conn->query($sql_fetch_groups) as $row_groups)	{
+								$row_group_id=$row_groups["group_id"];
+								$row_group_name=$row_groups["group_nm"];
+								echo '<option value="'.$row_group_id.'">'.$row_group_name.'</option>';
+							}
+						}
+						catch(PDOException $e)	{
+							
+						}
+					?>
+				</select></br>
+				<div id="subgroup-choose-sec">
+                Visible to : </br>
+                <?php                     
+                    
+                    if($_SESSION['subgroup']=='A')  {
+                        $group_id_inp=5;
+                        $group_list=implode(", ",$_SESSION['subgroups_a']);
+                    }
+                    else if($_SESSION['subgroup']=='F') {
+                        $group_id_inp=5;
+                        $group_list=implode(", ",$_SESSION['subgroups_f']);
+                    }
+                    else if($_SESSION['subgroup']=='U') {
+                        $group_id_inp=5;
+                        $group_list=implode(", ",$_SESSION['subgroups_u']);
+                    }
+                    else if($_SESSION['subgroup']=='G') {
+                        $group_id_inp=4;
+                        $group_list=implode(", ",$_SESSION['subgroups_g']);
+                    }                        
+                    else if($_SESSION['subgroup']=='P') {
+                        $group_id_inp=6;    
+                        $group_list=implode(", ",$_SESSION['subgroups_p']);
+                    }
+                    try {
+                        $sql_fetch_group_names = "select * from groups where subgroup_ind = 'Y'  and group_id in (".$group_list.")";
+                        echo "<input type='checkbox' name='subgroups[]' id='check-all' class='all-sec' value='".implode(", ",$_SESSION['subgroups_all'])."' />&nbsp;&nbsp;All</br>";
+                        foreach($conn->query($sql_fetch_group_names) as $row_group)   {
+                            $group_name = $row_group["group_nm"];
+                            $group_id = $row_group["group_id"];
+
+                            echo "<input type='checkbox' name='subgroups[]' id='' class='subgroup-sec' value='".$group_id."' />&nbsp;&nbsp;<span class='grp-names'>".$group_name."</span></br>";
+                        }   
+                    }
+                    catch(PDOException $e)  {
+                        echo "error occurred";
+                    }
+                 ?>
+				 </div></br>
 				<p><em>Before submitting, do check out for tips on how to use tags (Message box) by placing your cursor on the tags textbox and some related questions you might be looking for</em></p>
 				
 				<input type="hidden" id="tags" name="tags" /> 

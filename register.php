@@ -19,7 +19,27 @@
 <?php #include "header.php";
 include "connectDb.php";
 $name=$userid=$pwd=$repwd=$mail="";					#Variables to store input values.
-$message="";
+$message=$subgroup="";
+function inbt_email_check($mail)	{
+	$index_of_char=strpos($mail,'@');
+	$domain_name=substr($mail,$index_of_char+1);
+	if(!strcmp($domain_name,'jh.edu'))
+		return 1;
+	return 0;
+}
+function get_group_id($subgroup)	{
+	if($subgroup == 'A')
+		return 2;
+	else if($subgroup == 'F')
+		return 3;
+	else if($subgroup == 'G')
+		return 4;
+	else if($subgroup == 'U')
+		return 5;
+	else if($subgroup == 'P')
+		return 6;
+	else return 0;
+}
 if($_SERVER["REQUEST_METHOD"]=="POST")	{
 
 	#Check for proper name - empty/invalid characters
@@ -34,35 +54,63 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 		$verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
         $responseData = json_decode($verifyResponse);
 		if($responseData->success){
-		if(filter_var($mail, FILTER_VALIDATE_EMAIL)){
+			if(filter_var($mail, FILTER_VALIDATE_EMAIL)){
+				try	{
+      
+					$sql="insert into users
+					(user_id,disp_name,encrypt_pwd,email_addr,status)
+					values
+					('".$userid."','".$name."','".$hashed_pwd."','".$mail."','A')";
 
-		try	{
-			$sql="insert into users
-			(user_id,disp_name,encrypt_pwd,email_addr,status)
-			values
-			('".$userid."','".$name."','".$hashed_pwd."','".$mail."','A')";
+					$conn->exec($sql);
+					$message = "Registration successful";
+					/* Logic starts for INBT email check */
+					if(inbt_email_check($mail) == 1)	{
+						/* Check which subgroup user belongs to  */
+						$sql_check_subgroup="select code_typ from codevalues where code_val='EMAILID' and code_desc='".trim($mail)."'";
+                        $message = $sql_check_subgroup;
+						$stmt_check_subgroup=$conn->prepare($sql_check_subgroup);
+						$stmt_check_subgroup->execute();
+						if($stmt_check_subgroup->rowCount()>0)	{
+							$result_code=$stmt_check_subgroup->fetch();
+							$subgroup=$result_code['code_typ'];
+						}
+						else	{
+							$subgroup="";
+						}
+						$subgroup_id=get_group_id($subgroup);
+						if($subgroup_id <> 0)	{
+							$sql_add_mbr_subgroup="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
+												   values ('".$userid."',".$subgroup_id.",'admin','admin')";
+							$conn->exec($sql_add_mbr_subgroup);
+							$sql_add_mbr_inbt="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
+											   values ('".$userid."',1,'admin','admin')";
+							$conn->exec($sql_add_mbr_inbt);
 
-			$conn->exec($sql);
-			$message = "Registration successful";
-			session_start();
-			include "session.php";	#Starting user session
-			header("location:user_preference.php");		#On successful registration, redirect to dashboard
+                       					
+                        }
+						
+					}
+					session_start();
+					include "session.php";	#Starting user session
+
+					header("location:user_preference.php");		#On successful registration, redirect to dashboard
+				}
+				catch(PDOException $e)	{
+					// Debug only $message = $e->getMessage();
+					$message = "Uh oh something went wrong, please try again";
+				}
+			}
+			else{
+				$message="Invalid email";
+			}
 		}
-		catch(PDOException $e)	{
-			// Debug only $message = $e->getMessage();
-			$message = "Uh oh something went wrong, please try again";
-		}
-	}
 	else{
-		$message="Invalid email";
+		$message="Captcha Invalid, Try again";
 	}
 }
-else{
-	$message="Captcha Invalid, Try again";
-}
-}
-	else
-		$message = "Uh oh!! All fields are mandatory";
+else
+	$message = "Uh oh!! All fields are mandatory";
 }
 
 

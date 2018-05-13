@@ -463,3 +463,7 @@ div	{
 #proimg	{
 	text-align:center;
 }
+
+#subgroup-choose-sec    {
+    display:none;
+}

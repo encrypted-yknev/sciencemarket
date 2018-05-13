@@ -69,4 +69,29 @@ $_SESSION["flw_1"]=$follow_cnt1;
 $_SESSION["flw_2"]=$follow_cnt2;
 $_SESSION["interest"]=$tags_str;
 $_SESSION["interest_list"]=$tags_list;
+$subgroup='A'; # uncomment this line for testing
+$_SESSION['subgroup']=$subgroup; 
+$_SESSION["subgroup_id"]=get_subgroup_id($subgroup);
+/*initializing group id visibility for different subgroups */
+$_SESSION["subgroups_all"]=Array(2,3,4,5,6);
+$_SESSION["subgroups_a"]=Array(2,3,4,5,6);
+$_SESSION["subgroups_f"]=Array(2,3,4,5,6);
+$_SESSION["subgroups_u"]=Array(5);
+$_SESSION["subgroups_g"]=Array(4,6);
+$_SESSION["subgroups_p"]=Array(4,6);
+
+function get_subgroup_id($subgroup) {
+    
+    if($subgroup == 'A')
+        return 2;
+    else if($subgroup == 'F')
+        return 3;
+    else if($subgroup == 'U')
+        return 5;
+    else if($subgroup == 'G')
+        return 4;
+    else if($subgroup == 'P')
+        return 6;
+    return 0;
+}
 ?>

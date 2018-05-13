@@ -121,9 +121,31 @@
 					</div>
 				</div></br>
 				<div class="interest-sec">
-					<div id="interest-text">Your interests</div>
+					<div id="interest-text" ><strong>Groups</strong></div>
 					<div id="interest-tabs">
-						<?php
+                        <?php
+							try	{
+								$sql_fetch_user_grps="select t1.group_nm, t1.group_id from groups t1
+													  inner join group_mbr t2
+													  on t1.group_id=t2.group_id
+                                                      and t1.subgroup_ind = 'N'
+													  where t2.user_id = '".$_SESSION['user']."'";
+                                $stmt_fetch_user_grps=$conn->prepare($sql_fetch_user_grps);
+                                $stmt_fetch_user_grps->execute();
+                                if($stmt_fetch_user_grps->rowCount() > 0)   {
+                                    while($result_grp=$stmt_fetch_user_grps->fetch())   {
+    									echo "<a href='groups.php?group=".$result_grp["group_id"]."' target='_blank'>".$result_grp["group_nm"]."</a></br>";
+                                    }
+								}
+                                else    {
+                                    echo "<span class='msg-log'>You aren't a part of any group</span>";
+                                }
+							}
+							catch(PDOException	$e)	{
+								echo "Groups not found";
+							}
+						?>
+						<?php /*
 							try	{
 								$sql_fetch_user_tags="select tag_name from tags t
 													  inner join user_tags ut
@@ -135,10 +157,10 @@
 							}
 							catch(PDOException	$e)	{
 								echo "Error fetching interests";
-							}
+							}*/
 						?>
 					</div>
-				</div>
+				</div></br>
 			</div>
 			<div class="col-sm-7" id="middle-container">
 				<?php
