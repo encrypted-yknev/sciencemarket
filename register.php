@@ -30,7 +30,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 	$mail=htmlspecialchars(stripslashes(trim($_POST['mail'])));
 
 	if(!empty($name) && !empty($userid) && !empty($hashed_pwd) && !empty($mail))	{
-		$secret = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; //Replace with our own, these keys are localhost keys. Replace both this key and the one in HTML. 
+		$secret = '6LfU2VIUAAAAACdS9YNG9uYEm6vOBYiMBOz2KK5R'; //Replace with our own, these keys are localhost keys. Replace both this key and the one in HTML. 
 		$verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$_POST['g-recaptcha-response']);
         $responseData = json_decode($verifyResponse);
 		if($responseData->success){
@@ -143,7 +143,7 @@ else{
 				</div></br>
 				<div class="form-group">
 					<div class="col-sm-6 col-sm-offset-3">
-					<div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+					<div class="g-recaptcha" data-sitekey="6LfU2VIUAAAAAMRzpWPaggnrV1jcQvxA3zLklbTa"></div>
 				</div>
 				</div>
 				<!--
@@ -162,3 +162,4 @@ else{
 <?php #include "footer.php"; ?>
 </body>
 </html>
+
