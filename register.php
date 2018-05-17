@@ -86,6 +86,8 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 							$sql_add_mbr_inbt="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
 											   values ('".$userid."',1,'admin','admin')";
 							$conn->exec($sql_add_mbr_inbt);
+							$sql_updt_users="update users set subgroup_id = ".$subgroup_id." where user_id = '".$userid."'";
+							$conn->exec($sql_updt_users);
 
                        					
                         }
