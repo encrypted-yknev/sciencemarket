@@ -68,7 +68,7 @@ $qstn_array=$qstn_arr_str="";
 					$sql_fetch_all_qstn = "select qstn_id
 										from questions 
 										where posted_by='".$_SESSION['user']."' 
-                                        group by a.qstn_id,a.qstn_titl,a.qstn_desc,a.posted_by,a.topic_id,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,g.group_nm
+                                        group by a.qstn_id
 										order by created_ts desc
 										";
 					foreach($conn->query($sql_fetch_all_qstn) as $row_qid)	{
