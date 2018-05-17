@@ -345,3 +345,10 @@
 	background-color:#CCE6EF !important;
 	color:#000 !important;
 }
+.side-title {
+    font-family:'open sans condensed',Arial,sans-serif;
+    color:#2794C7;
+}
+.msg-log    {
+    font-size:12px;
+}
