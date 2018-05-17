@@ -46,6 +46,12 @@ include "../functions/get_time_offset.php";
 				
 				<?php
 					try	{
+
+                    if($_SESSION['subgroup'] == "")
+                        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
+                    else
+                        $filter_inbt_posts_cond = "";
+
 					$query_string="";
 					$sql_fetch_user_interests="select b.tag_name 
 									   from user_tags a
@@ -64,7 +70,9 @@ include "../functions/get_time_offset.php";
 								 a.up_votes,
 								 a.down_votes,
 								 a.topic_id,
-								 a.created_ts
+								 a.created_ts,
+                                 a.parent_group_id,
+                                 a.group_nm
 									 
 									 from
 									 (
@@ -77,6 +85,8 @@ include "../functions/get_time_offset.php";
 									 a.down_votes,
 									 a.topic_id,
 									 a.created_ts,
+                                     a1.parent_group_id,
+                                     g.group_nm,
 									 CASE WHEN a.qstn_id=@QID then @row:=@row + 1
 										else @row:=1 
 									END as rnum,
@@ -84,6 +94,10 @@ include "../functions/get_time_offset.php";
 									
 									FROM (select @row:=0,@qid:=0) t,
 									questions a 
+                                    left outer join group_posts a1
+                                    on a1.post_id = a.qstn_id    
+                                    left outer join groups g
+                                    on g.group_id = a1.parent_group_id
 									inner join qstn_tags b
 									on a.qstn_id=b.qstn_id
 									inner join tags c 
@@ -91,7 +105,7 @@ include "../functions/get_time_offset.php";
 									left outer join user_tags d
 									on d.tag_id=c.tag_id
 									and d.user_id='".$_SESSION['user']."' 
-									where a.posted_by<>'".$_SESSION['user']."'
+									where a.posted_by<>'".$_SESSION['user']."' ".$filter_inbt_posts_cond."
 									and match(a.qstn_titl,a.qstn_desc) against ('".$query_string."' in NATURAL LANGUAGE MODE)
 									) a
 									where a.rnum=1
@@ -126,7 +140,7 @@ include "../functions/get_time_offset.php";
 													left outer join user_tags d
 													on d.tag_id=c.tag_id
 													and d.user_id='".$_SESSION['user']."' 
-													where a.posted_by<>'".$_SESSION['user']."'
+													where a.posted_by<>'".$_SESSION['user']."' ".$filter_inbt_posts_cond."
 													and match(a.qstn_titl,a.qstn_desc) against ('".$query_string."' in NATURAL LANGUAGE MODE)
 													) a
 													where a.rnum=1

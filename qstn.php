@@ -353,6 +353,8 @@ function get_group_list($subgroup_char) {
 					</div>
 				</div></br>
 				<div id="tag-res"></div></br>
+                
+                <?php if($_SESSION['subgroup'] <> "")   { ?>
 				Choose group where you want to post :
 				<select class="form-control" id="q-groups" style="width:50%;" name="qgroups" onchange="getSubgroups(this.value)" onfocus="getInputInfo(6)">
 					<?php
@@ -407,7 +409,7 @@ function get_group_list($subgroup_char) {
                         echo "error occurred";
                     }
                  ?>
-				 </div></br>
+				 </div></br><?php } ?>
 				<p><em>Before submitting, do check out for tips on how to use tags (Message box) by placing your cursor on the tags textbox and some related questions you might be looking for</em></p>
 				
 				<input type="hidden" id="tags" name="tags" /> 

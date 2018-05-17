@@ -51,6 +51,11 @@ include "../functions/get_time_offset.php";
 				
 				<?php
 					try	{
+                    if($_SESSION['subgroup'] == "")
+                        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
+                    else
+                        $filter_inbt_posts_cond = "";
+
 					$query_string="";
 					$sql="select t.qstn_id,
 						   t.qstn_titl,
@@ -62,6 +67,8 @@ include "../functions/get_time_offset.php";
 						   t.created_ts,
 						   t.answer_ts,
 						   t.comment_ts,
+                           t.parent_group_id,
+                           t.group_nm,
 						   (case when t.answer_ts >= t.comment_ts then t.answer_ts
 								else t.comment_ts
 						   end) score
@@ -74,14 +81,21 @@ include "../functions/get_time_offset.php";
 						   a.up_votes,
 						   a.down_votes,
 						   a.created_ts,
+                           a1.parent_group_id,
+                           g.group_nm,
 						   coalesce(max(b.created_ts),0) as answer_ts,
 						   coalesce(max(c.created_ts),0) as comment_ts
 					from questions a
+                    left outer join group_posts a1
+                    on a1.post_id = a.qstn_id    
+                    left outer join groups g
+                    on g.group_id = a1.parent_group_id
 					left join answers b 
 					on a.qstn_id = b.qstn_id 
 					left outer join comments c 
 					on c.ans_id = b.ans_id
-					group by a.qstn_id,a.qstn_titl,a.qstn_desc 
+                    where 1=1 ".$filter_inbt_posts_cond." 
+					group by a.qstn_id, a.qstn_titl, a.qstn_desc, a.posted_by, a.up_votes, a.down_votes, a.topic_id, a.created_ts, a1.parent_group_id, g.group_nm  
 					ORDER BY answer_ts desc,comment_ts desc) t
 					order by score desc
 					limit 10";
@@ -105,7 +119,8 @@ include "../functions/get_time_offset.php";
 					on a.qstn_id = b.qstn_id 
 					left outer join comments c 
 					on c.ans_id = b.ans_id
-					group by a.qstn_id,a.qstn_titl,a.qstn_desc 
+                    where 1=1 ".$filter_inbt_posts_cond." 
+					group by a.qstn_id
 					ORDER BY answer_ts desc,comment_ts desc) t
 					order by score desc";
 					foreach($conn->query($sql_fetch_all_qstn) as $row_qid)	{

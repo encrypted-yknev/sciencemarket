@@ -1,7 +1,18 @@
 <?php
 if($_SERVER['REQUEST_METHOD'] == 'POST')	{
-	
-	$sql="select a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts from questions a inner join 	topics b on a.topic_id = b.topic_id where ";
+	if($_SESSION['subgroup'] == "")
+        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
+    else
+        $filter_inbt_posts_cond = "";
+
+	$sql="select a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,
+                                     g.group_nm 
+          from questions a 
+          left outer join group_posts a1
+          on a1.post_id = a.qstn_id    
+          left outer join groups g
+          on g.group_id = a1.parent_group_id 
+          inner join 	topics b on a.topic_id = b.topic_id where ";
 	$sql_fetch_all_qstn="select a.qstn_id from questions a inner join topics b on a.topic_id = b.topic_id where ";
 	$topic_nm = trim($_POST['filter']);
 	$sort_order = trim($_POST['sort']);
@@ -19,27 +30,37 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')	{
 		
 		if($logged_in == 1)	{
 			if($sort_order == 'My posts')	{
-				$sql.="b.parent_topic = ".$parent_topic_id." and a.posted_by='".$_SESSION['user']."' order by ".$sort." desc limit 10";
-				$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." and a.posted_by='".$_SESSION['user']."' order by ".$sort." desc";
+				$sql.="b.parent_topic = ".$parent_topic_id." and a.posted_by='".$_SESSION['user']."' ".$filter_inbt_posts_cond." 
+                       group by a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,
+                                     g.group_nm 
+                       order by ".$sort." desc limit 10";
+				$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." and a.posted_by='".$_SESSION['user']."' ".$filter_inbt_posts_cond." group by a.qstn_id order by ".$sort." desc";
 			}
 			else	{
-				$sql.="b.parent_topic = ".$parent_topic_id." order by ".$sort." desc limit 10";
-				$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." order by ".$sort." desc";
+				$sql.="b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,
+                                     g.group_nm order by ".$sort." desc limit 10";
+				$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id order by ".$sort." desc";
 			}
 		}
 		else	{
-			$sql.="b.parent_topic = ".$parent_topic_id." order by ".$sort." desc limit 10";
-			$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." order by ".$sort." desc";
+			$sql.="b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,
+                                     g.group_nm order by ".$sort." desc limit 10";
+			$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id order by ".$sort." desc";
 		}
 	}
 	else 	{
-		$sql.="b.parent_topic = ".$parent_topic_id." order by created_ts desc limit 10";
-		$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." order by a.created_ts desc";
+		$sql.="b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,
+                                     g.group_nmorder by created_ts desc limit 10";
+		$sql_fetch_all_qstn.="b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id order by a.created_ts desc";
 	}
 }
 else	{
-	$sql="select a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts from questions a inner join 	topics b on a.topic_id = b.topic_id where b.parent_topic = ".$parent_topic_id." order by a.created_ts desc limit 10";
-	$sql_fetch_all_qstn="select a.qstn_id from questions a inner join topics b on a.topic_id = b.topic_id where b.parent_topic = ".$parent_topic_id." order by a.created_ts desc";
+	$sql="select a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,g.group_nm 
+          from questions a left outer join group_posts a1
+          on a1.post_id = a.qstn_id    
+          left outer join groups g
+          on g.group_id = a1.parent_group_id inner join 	topics b on a.topic_id = b.topic_id where b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id,a.qstn_titl,a.qstn_desc,a.topic_id,a.posted_by,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,g.group_nm order by a.created_ts desc limit 10";
+	$sql_fetch_all_qstn="select a.qstn_id from questions a inner join topics b on a.topic_id = b.topic_id where b.parent_topic = ".$parent_topic_id." ".$filter_inbt_posts_cond." group by a.qstn_id order by a.created_ts desc";
 }
 
 ?>

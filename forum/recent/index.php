@@ -50,6 +50,11 @@ include "../functions/get_time_offset.php";
 				
 				<?php
 					try	{
+                    if($_SESSION['subgroup'] == "")
+                        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
+                    else
+                        $filter_inbt_posts_cond = "";
+
 					$query_string="";
 					$sql="select  a.qstn_id,
 								  a.qstn_titl,
@@ -58,8 +63,25 @@ include "../functions/get_time_offset.php";
 								  a.topic_id,
 								  a.up_votes,
 								  a.down_votes,
-								  a.created_ts 
+								  a.created_ts,
+                                  a1.parent_group_id,
+                                  g.group_nm 
 						from questions a
+                        left outer join group_posts a1
+                        on a1.post_id = a.qstn_id    
+                        left outer join groups g
+                        on g.group_id = a1.parent_group_id     
+                        where 1=1 ".$filter_inbt_posts_cond." 
+                        group by a.qstn_id,
+								  a.qstn_titl,
+								  a.qstn_desc,
+								  a.posted_by,
+								  a.topic_id,
+								  a.up_votes,
+								  a.down_votes,
+								  a.created_ts,
+                                  a1.parent_group_id,
+                                  g.group_nm
 						order by a.created_ts desc limit 10"; 
 						
 					include "../fetch_answers1.php";
@@ -71,6 +93,12 @@ include "../functions/get_time_offset.php";
 					$qstn_array=array();
 					$sql_fetch_all_qstn = "select a.qstn_id
 										from questions a
+                                        left outer join group_posts a1
+                                        on a1.post_id = a.qstn_id    
+                                        left outer join groups g
+                                        on g.group_id = a1.parent_group_id     
+                                        where 1=1 ".$filter_inbt_posts_cond." 
+                                        group by a.qstn_id
 										order by a.created_ts desc	
 										";
 					foreach($conn->query($sql_fetch_all_qstn) as $row_qid)	{

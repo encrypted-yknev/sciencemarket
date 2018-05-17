@@ -56,9 +56,25 @@ while($start_qstn <= $end_qstn)	{
 				 a.topic_id,
 				 a.up_votes,
 				 a.down_votes,
-				 a.created_ts 
+				 a.created_ts,
+                a1.parent_group_id,
+                 g.group_nm
 		 from questions a
-		 where a.qstn_id = ".$qstn_list[$start_qstn];
+         left outer join group_posts a1
+         on a1.post_id = a.qstn_id    
+         left outer join groups g
+         on g.group_id = a1.parent_group_id
+		 where a.qstn_id = ".$qstn_list[$start_qstn]." 
+         group by a.qstn_id,
+				 a.qstn_titl,
+				 a.qstn_desc,
+				 a.posted_by,
+				 a.topic_id,
+				 a.up_votes,
+				 a.down_votes,
+				 a.created_ts,
+                a1.parent_group_id,
+                 g.group_nm";
 	$stmt=$conn->prepare($sql);
 	$stmt->execute();
 							
@@ -71,9 +87,14 @@ while($start_qstn <= $end_qstn)	{
 			$topic_id=$row['topic_id'];
 			$up_votes=$row['up_votes'];
 			$down_votes=$row['down_votes'];
+            $parent_group_id = $row["parent_group_id"];
+            $group_name=$row['group_nm'];
 				?>
 				<div class="qstn_row">
-				
+				<?php if($parent_group_id > 0)  {
+                        echo '<div class="badge grp-disp">'.$group_name.'</div>';
+                      }
+                ?>
 				<div class="qstn-topic-section">
 					<?php
 						try	{

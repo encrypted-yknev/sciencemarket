@@ -165,6 +165,11 @@
 			<div class="col-sm-7" id="middle-container">
 				<?php
 				try	{
+                    if($_SESSION['subgroup'] == "")
+                        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
+                    else
+                        $filter_inbt_posts_cond = "";
+
 					$query_string="";
 					$sql_fetch_user_interests="select b.tag_name 
 									   from user_tags a
@@ -184,6 +189,8 @@
 									 t.down_votes,
 									 t.topic_id,
 									 t.created_ts,
+                                     t.parent_group_id,
+                                     t.group_nm,
 									(case when t.answer_ts >= t.comment_ts then t.answer_ts
 											else t.comment_ts
 									   end) score	
@@ -197,8 +204,14 @@
 									 a.topic_id,
 									 a.created_ts,
 									coalesce(max(UNIX_TIMESTAMP(d.created_ts)),0) as answer_ts,
-									coalesce(max(UNIX_TIMESTAMP(e.created_ts)),0) as comment_ts
+									coalesce(max(UNIX_TIMESTAMP(e.created_ts)),0) as comment_ts,
+                                     a1.parent_group_id,
+                                     g.group_nm
 							 from questions a 
+                               left outer join group_posts a1
+                               on a1.post_id = a.qstn_id 
+                               left outer join groups g
+                               on g.group_id = a1.parent_group_id
 							   inner join qstn_tags b
 							   on a.qstn_id=b.qstn_id
 							   inner join tags c 
@@ -210,8 +223,8 @@
 							   where a.posted_by <> '".$_SESSION['user']."' and
 							   (c.tag_name REGEXP ('".$query_string."')
 							   or a.qstn_titl REGEXP ('".$query_string."')
-							   or a.qstn_desc REGEXP ('".$query_string."'))
-							   group by a.qstn_id 
+							   or a.qstn_desc REGEXP ('".$query_string."')) ".$filter_inbt_posts_cond." 
+							   group by a.qstn_id, a.qstn_titl, a.qstn_desc, a.posted_by, a.up_votes, a.down_votes, a.topic_id, a.created_ts, a1.parent_group_id, g.group_nm 
 							   order by a.created_ts desc) t
 							   order by score desc";
 							   
@@ -228,7 +241,7 @@
 						  </div>';
 				}
 				catch(PDOException	$e)	{
-					echo '';
+					echo $sql;
 				}
 				?>
 			</div>
@@ -271,3 +284,4 @@
 			</div>
 		</div>
 	</div>
+

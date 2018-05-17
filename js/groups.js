@@ -7,7 +7,29 @@ $(document).ready(function()    {
         else    {
             $(".subgroup-sec").removeAttr("disabled");
             $(".grp-names").css("color","#000");
+            var subgroups = new Array();
+            $(".subgroup-sec:checked").each(function() {
+               subgroups.push($(this).val());
+            });
         }
+        
+        $.ajax({
+            url:"fetch_group_posts.php",
+            type:"post",
+            data:
+            {   
+                "group_id":document.getElementById("grp-id-val").value,
+                "sort":document.getElementById("sort-id").value,
+                "subgroups":subgroups
+            },
+            beforeSend:function()   {
+                $("#middle-container").html("Loading...");
+            },
+            success:function(res)   {
+                $("#middle-container").html(res);
+            }
+
+        });
     });
 });
 
