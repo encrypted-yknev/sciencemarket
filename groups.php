@@ -114,6 +114,7 @@ else
                             }
                             try {
                                 $sql_fetch_group_names = "select * from groups where subgroup_ind = 'Y'  and group_id in (".$group_list.")";
+                                echo "<input type='checkbox' name='subgroups[]' id='' class='subgroup-sec' value='0' onchange='fetchGroupPosts(".$group_id.")' /><span class='grp-names'>&nbsp;&nbsp;My posts</span></br>";
                                 echo "<input type='checkbox' name='subgroups[]' id='check-all' class='all-sec' value='".implode(", ",$_SESSION['subgroups_all'])."' />&nbsp;&nbsp;All</br>";
                                 foreach($conn->query($sql_fetch_group_names) as $row_group)   {
                                     $group_name = $row_group["group_nm"];
@@ -135,12 +136,13 @@ else
 						<option value="2">Most upvoted</option>
 						<option value="3">Most viewed</option>
 					</select>
-				</div></br>
+				</div>
+                <input type="hidden" value="<?php echo $group_id; ?>" id="grp-id-val" /></br>
 			</div>
 			<div class="col-sm-10" id="middle-container">
 				<?php
 				try	{
-					
+					    $subgroup_list = implode(", ",$_SESSION["subgroups_all"]);
 						$sql="select t.qstn_id,
 									 t.qstn_titl,
 									 t.qstn_desc,
@@ -164,10 +166,14 @@ else
 									coalesce(max(UNIX_TIMESTAMP(d.created_ts)),0) as answer_ts,
 									coalesce(max(UNIX_TIMESTAMP(e.created_ts)),0) as comment_ts
 							 from questions a 
+                               inner join users a2
+                               on a2.user_id=a.posted_by
+                               and a2.user_id <> '".$_SESSION['user']."'
+                               and a2.subgroup_id in (".$subgroup_list.") 
                                inner join group_posts a1
                                on a.qstn_id=a1.post_id
-                               and a1.parent_group_id=".$group_id."                            
-                               and a1.group_id = ".$_SESSION["subgroup_id"]."
+                               and a1.parent_group_id=".$group_id."   
+                               and a1.group_id = ".$_SESSION["subgroup_id"]." 
 							   inner join qstn_tags b
 							   on a.qstn_id=b.qstn_id
 							   inner join tags c 

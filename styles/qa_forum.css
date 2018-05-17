@@ -507,3 +507,12 @@
 	/*padding-bottom:0px;*/
 }
 /* end */
+
+.grp-disp   {
+    border-radius:0px !important;
+    background-color:#72C76F !important;
+    color:#fff !important;
+    position:absolute;
+    right:30px;
+}   
+

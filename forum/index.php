@@ -51,6 +51,10 @@ include "functions/get_time_offset.php";
 				
 				<?php
 					try	{
+                    if($_SESSION['subgroup'] == "")
+                        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
+                    else
+                        $filter_inbt_posts_cond = "";
 					if($logged_in == 1)	{
 						if(isset($_GET['tag']))	{
 							$url_tag_id=$_GET['tag'];
@@ -61,11 +65,27 @@ include "functions/get_time_offset.php";
 										 a.up_votes,
 										 a.down_votes,
 										 a.topic_id,
-										 a.created_ts 
+										 a.created_ts,
+                                         a1.parent_group_id,
+                                         g.group_nm 
 								from questions a
+                                left outer join group_posts a1
+                                on a1.post_id = a.qstn_id 
+                                left outer join groups g
+                                on g.group_id = a1.parent_group_id
 								inner join qstn_tags b 
 								on a.qstn_id = b.qstn_id
-								where b.tag_id = ".$url_tag_id;
+								where b.tag_id = ".$url_tag_id." ".$filter_inbt_posts_cond."
+                                group by  a.qstn_id,
+	                                      a.qstn_titl,
+	                                      a.qstn_desc,
+	                                      a.posted_by,
+	                                      a.topic_id,
+	                                      a.up_votes,
+	                                      a.down_votes,
+	                                      a.created_ts,
+	                                      a1.parent_group_id,
+	                                      g.group_nm" ;
 						}
 						else	{
 					/* $query_string="";
@@ -85,8 +105,25 @@ include "functions/get_time_offset.php";
 								  a.topic_id,
 								  a.up_votes,
 								  a.down_votes,
-								  a.created_ts 
+								  a.created_ts,
+                                  a1.parent_group_id,
+                                  g.group_nm 
 						from questions a
+                        left outer join group_posts a1
+                        on a1.post_id = a.qstn_id   
+                        left outer join groups g
+                        on g.group_id = a1.parent_group_id
+                        where 1 = 1 ".$filter_inbt_posts_cond."
+                        group by  a.qstn_id,
+	                              a.qstn_titl,
+	                              a.qstn_desc,
+	                              a.posted_by,
+	                              a.topic_id,
+	                              a.up_votes,
+	                              a.down_votes,
+	                              a.created_ts,
+	                              a1.parent_group_id,
+	                              g.group_nm 
 						order by a.created_ts desc limit 10"; 
 						
 					/* $sql="select     a.qstn_id,
@@ -134,19 +171,35 @@ include "functions/get_time_offset.php";
 					} 
 					else	{
 						if(isset($_GET['tag']))	{
-							$url_tag_id=$_GET['tag'];
-							$sql="select  a.qstn_id,
-														 a.qstn_titl,
-														 a.qstn_desc,
-														 a.posted_by,
-														 a.up_votes,
-														 a.down_votes,
-														 a.topic_id,
-														 a.created_ts 
-												from questions a
-												inner join qstn_tags b 
-												on a.qstn_id = b.qstn_id
-												where b.tag_id = ".$url_tag_id;
+							$url_tag_id=$_GET['tag'];   
+							$sql="select a.qstn_id,
+										 a.qstn_titl,
+										 a.qstn_desc,
+										 a.posted_by,
+										 a.up_votes,
+										 a.down_votes,
+										 a.topic_id,
+										 a.created_ts,
+                                         a1.parent_group_id,
+                                         g.group_nm 
+								from questions a
+                                left outer join group_posts a1
+                                on a1.post_id = a.qstn_id 
+                                left outer join groups g
+                                on g.group_id = a1.parent_group_id
+								inner join qstn_tags b 
+								on a.qstn_id = b.qstn_id
+								where b.tag_id = ".$url_tag_id." ".$filter_inbt_posts_cond."
+                                group by  a.qstn_id,
+                                          a.qstn_titl,
+                                          a.qstn_desc,
+                                          a.posted_by,
+                                          a.topic_id,
+                                          a.up_votes,
+                                          a.down_votes,
+                                          a.created_ts,
+                                          a1.parent_group_id,
+                                          g.group_nm";
 						}
 						else	{
 							$sql="select t.qstn_id,
@@ -159,6 +212,8 @@ include "functions/get_time_offset.php";
 							   t.created_ts,
 							   t.answer_ts,
 							   t.comment_ts,
+                               t.parent_group_id, 
+                               t.group_nm,
 							   (case when t.answer_ts >= t.comment_ts then t.answer_ts
 									else t.comment_ts
 							   end) score
@@ -171,14 +226,22 @@ include "functions/get_time_offset.php";
 								   a.up_votes,
 								   a.down_votes,
 								   a.created_ts,
+                                   a1.parent_group_id,
+                                   g.group_nm, 
 								   coalesce(max(b.created_ts),0) as answer_ts,
 								   coalesce(max(c.created_ts),0) as comment_ts
 							from questions a
+                            left outer join group_posts a1
+                            on a1.post_id = a.qstn_id    
+                            left outer join groups g
+                            on g.group_id = a1.parent_group_id
 							left join answers b 
 							on a.qstn_id = b.qstn_id 
 							left outer join comments c 
-							on c.ans_id = b.ans_id
-							group by a.qstn_id,a.qstn_titl,a.qstn_desc 
+							on c.ans_id = b.ans_id 
+                            where 1 = 1 ".$filter_inbt_posts_cond." 
+							group by a.qstn_id, a.qstn_titl, a.qstn_desc, a.posted_by, a.up_votes, 
+                                     a.down_votes, a.topic_id, a.created_ts, a1.parent_group_id, g.group_nm 
 							ORDER BY answer_ts desc,comment_ts desc) t
 							order by score desc
 							limit 10";
@@ -195,13 +258,24 @@ include "functions/get_time_offset.php";
 							if(isset($_GET['tag']))	{
 								$sql_fetch_all_qstn="select distinct a.qstn_id 
 													from questions a
+                                                    left outer join group_posts a1
+                                                    on a1.post_id = a.qstn_id    
+                                                    left outer join groups g
+                                                    on g.group_id = a1.parent_group_id
 													inner join qstn_tags b 
 													on a.qstn_id = b.qstn_id
-													where b.tag_id=".$_GET['tag'];
+													where b.tag_id=".$_GET['tag']." ".$filter_inbt_posts_cond."
+                                                    group by a.qstn_id";
 							}
 							else	{
 							$sql_fetch_all_qstn = "select a.qstn_id
 										from questions a
+                                        left outer join group_posts a1
+                                        on a1.post_id = a.qstn_id    
+                                        left outer join groups g
+                                        on g.group_id = a1.parent_group_id
+                                        where 1 = 1 ".$filter_inbt_posts_cond."
+                                        group by a.qstn_id
 										order by a.created_ts desc";
 							/* $sql_fetch_all_qstn = "select a.qstn_id,
 														  a.created_ts
@@ -235,9 +309,14 @@ include "functions/get_time_offset.php";
 							if(isset($_GET['tag']))	{
 								$sql_fetch_all_qstn="select distinct a.qstn_id 
 													from questions a
+                                                    left outer join group_posts a1
+                                                    on a1.post_id = a.qstn_id    
+                                                    left outer join groups g
+                                                    on g.group_id = a1.parent_group_id
 													inner join qstn_tags b 
 													on a.qstn_id = b.qstn_id
-													where b.tag_id=".$_GET['tag'];
+													where b.tag_id=".$_GET['tag']." ".$filter_inbt_posts_cond." 
+                                                    group by a.qstn_id";
 							}
 							else	{
 								$sql_fetch_all_qstn = "select t.qstn_id,
@@ -249,11 +328,16 @@ include "functions/get_time_offset.php";
 									   coalesce(max(b.created_ts),0) as answer_ts,
 									   coalesce(max(c.created_ts),0) as comment_ts
 								from questions a
+                                left outer join group_posts a1
+                                on a1.post_id = a.qstn_id    
+                                left outer join groups g
+                                on g.group_id = a1.parent_group_id
 								left join answers b 
 								on a.qstn_id = b.qstn_id 
 								left outer join comments c 
 								on c.ans_id = b.ans_id
-								group by a.qstn_id,a.qstn_titl,a.qstn_desc 
+                                where 1 = 1 ".$filter_inbt_posts_cond."
+								group by a.qstn_id
 								ORDER BY answer_ts desc,comment_ts desc) t
 								order by score desc";
 							}
@@ -265,7 +349,7 @@ include "functions/get_time_offset.php";
 						$qstn_arr_str=implode("|",$qstn_array);
 				}
 				catch(PDOException	$e)	{
-					echo 'Error fetching Question '.$e->getMessage();
+					echo 'Error fetching Question ';
 				}
 				?>
 				</div>

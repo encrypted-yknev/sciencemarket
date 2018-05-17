@@ -48,8 +48,14 @@ $qstn_array=$qstn_arr_str="";
 				<?php
 					try	{
 					$query_string="";
-					$sql="select a.qstn_id,a.qstn_titl,a.qstn_desc,a.posted_by,a.topic_id,a.up_votes,a.down_votes,a.created_ts from questions a 
-					where posted_by='".$_SESSION['user']."' order by created_ts desc limit 10";
+					$sql="select a.qstn_id,a.qstn_titl,a.qstn_desc,a.posted_by,a.topic_id,a.up_votes,a.down_votes,a.created_ts,a1.parent_group_id,g.group_nm
+                    from questions a 
+                    left outer join group_posts a1
+                    on a1.post_id = a.qstn_id    
+                    left outer join groups g
+                    on g.group_id = a1.parent_group_id
+					where a.posted_by='".$_SESSION['user']."' 
+                    order by a.created_ts desc limit 10";
 					
 					include "../fetch_answers1.php";
 					if($stmt->rowCount() <=0)	{

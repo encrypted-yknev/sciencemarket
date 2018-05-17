@@ -29,9 +29,14 @@ else if($count_slash==4)
 			$topic_id=$row['topic_id'];
 			$up_votes=$row['up_votes'];
 			$down_votes=$row['down_votes'];
+            $parent_group_id = $row["parent_group_id"];
+            $group_name=$row['group_nm'];
 				?>
 				<div class="qstn_row">
-				
+				<?php if($parent_group_id > 0)  {
+                        echo '<div class="badge grp-disp">'.$group_name.'</div>';
+                      }
+                ?>
 				<div class="qstn-topic-section">
 					<?php
 						try	{
@@ -59,6 +64,8 @@ else if($count_slash==4)
 						include $slashes."fetch_user_dtls.php";
 					?>
 				</div>
+                
+                   
 				<div class="user-img-section" onmouseleave='showUserCard(event,1,<?php echo $qid; ?>,"q")' onmouseenter='showUserCard(event,0,<?php echo $qid; ?>,"q")' style="background-image:url('<?php echo $img_url; ?>'); background-size:cover;">
 					
 				</div>
@@ -79,7 +86,7 @@ else if($count_slash==4)
 					$up_vote=$up_user_votes;
 					$down_vote=$down_user_votes;
 					$id=$qid;
-					include $slashes."user_card.php"; 
+					include $slashes."user_card.php";       
 					include $slashes."message_box.php";
 					
 				?>
@@ -88,7 +95,7 @@ else if($count_slash==4)
 				<a class="titl-link" href="<?php echo $slashes.'qstn_ans.php?qid='.$qid ?>"><?php echo $row["qstn_titl"]; ?></a>&emsp;
 				<span id="qstn-ans-count"></span>
 				<p id="qstn-desc"><?php echo $row["qstn_desc"]; ?></p>
-		
+		        
 				<div class="tag-section">
 				<?php
 					try	{
