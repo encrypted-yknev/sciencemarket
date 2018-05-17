@@ -65,11 +65,15 @@ $qstn_array=$qstn_arr_str="";
 						  </div>';
 					}
 					$qstn_array=array();
-					$sql_fetch_all_qstn = "select qstn_id
-										from questions 
+					$sql_fetch_all_qstn = "select a.qstn_id
+										from questions a
+                                        left outer join group_posts a1
+                                        on a1.post_id = a.qstn_id    
+                                        left outer join groups g
+                                        on g.group_id = a1.parent_group_id
 										where posted_by='".$_SESSION['user']."' 
                                         group by a.qstn_id
-										order by created_ts desc
+										order by a.created_ts desc
 										";
 					foreach($conn->query($sql_fetch_all_qstn) as $row_qid)	{
 						$row_qstn_id=$row_qid['qstn_id'];
@@ -78,7 +82,7 @@ $qstn_array=$qstn_arr_str="";
 					$qstn_arr_str=implode("|",$qstn_array);
 				}
 				catch(PDOException	$e)	{
-					echo 'Error fetching Question';
+					echo 'Error fetching Question '.$e->getMessage();
 				}
 				?>
 				
