@@ -23,7 +23,7 @@ $message=$subgroup="";
 function inbt_email_check($mail)	{
 	$index_of_char=strpos($mail,'@');
 	$domain_name=substr($mail,$index_of_char+1);
-	if(!strcmp($domain_name,'jh.edu'))
+	if(!strcmp($domain_name,'jhu.edu'))
 		return 1;
 	return 0;
 }
@@ -87,11 +87,8 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 											   values ('".$userid."',1,'admin','admin')";
 							$conn->exec($sql_add_mbr_inbt);
 							$sql_updt_users="update users set subgroup_id = ".$subgroup_id." where user_id = '".$userid."'";
-							$conn->exec($sql_updt_users);
-
-                       					
-                        }
-						
+							$conn->exec($sql_updt_users);                       				
+                        }						
 					}
 					session_start();
 					include "session.php";	#Starting user session
