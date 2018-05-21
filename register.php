@@ -64,32 +64,33 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 
 					$conn->exec($sql);
 					$message = "Registration successful";
-					/* Logic starts for INBT email check */
-					if(inbt_email_check($mail) == 1)	{
-						/* Check which subgroup user belongs to  */
-						$sql_check_subgroup="select code_typ from codevalues where code_val='EMAILID' and code_desc='".trim($mail)."'";
-                        $message = $sql_check_subgroup;
-						$stmt_check_subgroup=$conn->prepare($sql_check_subgroup);
-						$stmt_check_subgroup->execute();
-						if($stmt_check_subgroup->rowCount()>0)	{
-							$result_code=$stmt_check_subgroup->fetch();
-							$subgroup=$result_code['code_typ'];
-						}
-						else	{
-							$subgroup="";
-						}
-						$subgroup_id=get_group_id($subgroup);
-						if($subgroup_id <> 0)	{
-							$sql_add_mbr_subgroup="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
-												   values ('".$userid."',".$subgroup_id.",'admin','admin')";
-							$conn->exec($sql_add_mbr_subgroup);
-							$sql_add_mbr_inbt="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
-											   values ('".$userid."',1,'admin','admin')";
-							$conn->exec($sql_add_mbr_inbt);
-							$sql_updt_users="update users set subgroup_id = ".$subgroup_id." where user_id = '".$userid."'";
-							$conn->exec($sql_updt_users);                       				
-                        }						
+					/* Logic starts for INBT email check */				
+					/* Check which subgroup user belongs to  */
+					#$sql_check_subgroup="select code_typ from codevalues where code_val='EMAILID' and code_desc='".trim($mail)."'";
+                    $sql_check_subgroup="select * from email_address where email_addr='".trim($mail)."'";                        
+					$stmt_check_subgroup=$conn->prepare($sql_check_subgroup);
+					$stmt_check_subgroup->execute();
+					if($stmt_check_subgroup->rowCount()>0)	{
+						$result_code=$stmt_check_subgroup->fetch();
+						$subgroup_id=$result_code['subgroup_id'];
+						$group_id=$result_code['group_id'];
 					}
+					else	{
+						$subgroup_id=0;
+                        $group_id=0;
+					}
+				#	$subgroup_id=get_group_id($subgroup);
+					if($subgroup_id <> 0)	{
+						$sql_add_mbr_subgroup="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
+											   values ('".$userid."',".$subgroup_id.",'admin','admin')";
+						$conn->exec($sql_add_mbr_subgroup);
+						$sql_add_mbr_group="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
+										   values ('".$userid."',".$group_id.",'admin','admin')";
+						$conn->exec($sql_add_mbr_group);
+						$sql_updt_users="update users set subgroup_id = ".$subgroup_id." where user_id = '".$userid."'";
+						$conn->exec($sql_updt_users);                       				
+                    }						
+					
 					session_start();
 					include "session.php";	#Starting user session
 
