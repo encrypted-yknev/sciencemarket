@@ -81,12 +81,10 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 					}
 				#	$subgroup_id=get_group_id($subgroup);
 					if($subgroup_id <> 0)	{
-						$sql_add_mbr_subgroup="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
-											   values ('".$userid."',".$subgroup_id.",'admin','admin')";
+						$sql_add_mbr_subgroup="insert into group_mbr (user_id,group_id,subgroup_id,created_by,last_updt_by) 
+											   values ('".$userid."',".$group_id.",".$subgroup_id."'admin','admin')";
 						$conn->exec($sql_add_mbr_subgroup);
-						$sql_add_mbr_group="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
-										   values ('".$userid."',".$group_id.",'admin','admin')";
-						$conn->exec($sql_add_mbr_group);
+						
 						$sql_updt_users="update users set subgroup_id = ".$subgroup_id." where user_id = '".$userid."'";
 						$conn->exec($sql_updt_users);                       				
                     }						
