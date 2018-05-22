@@ -359,7 +359,13 @@ function get_group_list($subgroup_char) {
 				<select class="form-control" id="q-groups" style="width:50%;" name="qgroups" onchange="getSubgroups(this.value)" onfocus="getInputInfo(6)">
 					<?php
 						try	{	
-							$sql_fetch_groups="select group_id,group_nm from groups where subgroup_ind='N'";
+							$sql_fetch_groups="select a.group_id,
+                                                      a.group_nm 
+                                               from groups a
+                                               inner join group_mbr b
+                                               on a.group_id = b.group_id
+                                               where a.subgroup_ind='N'
+                                               and b.user_id = '".$_SESSION['user']."'";
 							foreach($conn->query($sql_fetch_groups) as $row_groups)	{
 								$row_group_id=$row_groups["group_id"];
 								$row_group_name=$row_groups["group_nm"];
