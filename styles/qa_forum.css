@@ -510,9 +510,9 @@
 
 .grp-disp   {
     border-radius:0px !important;
-    background-color:#72C76F !important;
+    background-color:#337ab7 !important;
     color:#fff !important;
-    position:absolute;
-    right:30px;
+    float:right;
+    font-size:11px !important;
 }   
 

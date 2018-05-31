@@ -92,40 +92,53 @@ else
 				<div class="filter-section"></br>
 					<span class="menu-title side-title">Filter by</span></br>
 					<?php
-                            if($_SESSION['subgroup']=='A')  {
-                                $group_id_inp=5;
-                                $group_list=implode(", ",$_SESSION['subgroups_a']);
+                        try	{
+                            /* Fetch all subgroups for a given group */
+                            $subgroup_all = "";
+                            $sql_fetch_all_subgroups = "select subgroup_id 
+                                                          from subgroups 
+                                                          where parent_group_id = ".$group_id;
+                            
+                            foreach($conn->query($sql_fetch_all_subgroups) as $row) {
+                                $subgroup_stg = $row['subgroup_id'];
+                                $subgroup_all = $subgroup_all.$subgroup_stg.' ';
                             }
-                            else if($_SESSION['subgroup']=='F') {
-                                $group_id_inp=5;
-                                $group_list=implode(", ",$_SESSION['subgroups_f']);
-                            }
-                            else if($_SESSION['subgroup']=='U') {
-                                $group_id_inp=5;
-                                $group_list=implode(", ",$_SESSION['subgroups_u']);
-                            }
-                            else if($_SESSION['subgroup']=='G') {
-                                $group_id_inp=4;
-                                $group_list=implode(", ",$_SESSION['subgroups_g']);
-                            }                        
-                            else if($_SESSION['subgroup']=='P') {
-                                $group_id_inp=6;    
-                                $group_list=implode(", ",$_SESSION['subgroups_p']);
-                            }
-                            try {
-                                $sql_fetch_group_names = "select * from groups where subgroup_ind = 'Y'  and group_id in (".$group_list.")";
-                                echo "<input type='checkbox' name='subgroups[]' id='' class='subgroup-sec' value='0' onchange='fetchGroupPosts(".$group_id.")' /><span class='grp-names'>&nbsp;&nbsp;My posts</span></br>";
-                                echo "<input type='checkbox' name='subgroups[]' id='check-all' class='all-sec' value='".implode(", ",$_SESSION['subgroups_all'])."' />&nbsp;&nbsp;All</br>";
-                                foreach($conn->query($sql_fetch_group_names) as $row_group)   {
-                                    $group_name = $row_group["group_nm"];
-                                    $sub_group_id = $row_group["group_id"];
+                            $subgroup_all = str_replace(" ",",",trim($subgroup_all));
+                            
+                            /* Fetch all subgroups which are visible to logged in user for a given group */
+                            $sql_fetch_visbl_subgroups = "select replace(trim(extractvalue(subgroup_visbl_confg,'/subgroups/subgroup_id')),' ',',') as 'subgroups' 
+                                                    from subgroups t1
+                                                    inner join group_mbr t2
+                                                    on t1.subgroup_id = t2.subgroup_id
+                                                    and t2.user_id = '".$_SESSION['user']."'
+                                                    where parent_group_id = ".$group_id;
+                            
+                            
+                            $stmt_fetch_visbl_subgroups=$conn->query($sql_fetch_visbl_subgroups);
+                            $stmt_fetch_visbl_subgroups->execute();
+                            $result_subgroups = $stmt_fetch_visbl_subgroups->fetch();
+                            $subgroup_ids = $result_subgroups['subgroups'];
+                            
+                            /* Display subgroup id and names for the list fetched above */
+		                    $sql_fetch_group_names="select t1.group_id,t1.group_nm
+                                                    from groups t1
+                                                    inner join subgroups t2
+                                                    on t1.group_id = t2.subgroup_id
+                                                    where t2.parent_group_id = 1
+                                                    and t2.subgroup_id in (".$subgroup_ids.")";
+                                                   
+		                    echo "<input type='checkbox' name='subgroups[]' id='' class='subgroup-sec' value='0' onchange='fetchGroupPosts(".$group_id.")' />&nbsp;&nbsp;<span class='grp-names'>My Posts</span></br>";
+                            echo "<input type='checkbox' name='subgroups[]' id='check-all' class='all-sec' value='".$subgroup_all."' />&nbsp;&nbsp;All</br>";
+                            foreach($conn->query($sql_fetch_group_names) as $row_group)   {
+                                $group_name = $row_group["group_nm"];
+                                $grp_id = $row_group["group_id"];
 
-                                    echo "<input type='checkbox' onchange='fetchGroupPosts(".$group_id.")' name='subgroups[]' id='' class='subgroup-sec' value='".$sub_group_id."' />&nbsp;&nbsp;<span class='grp-names'>".$group_name."</span></br>";
-                                }   
-                            }
-                            catch(PDOException $e)  {
-                                echo "error occurred";
-                            }
+                                echo "<input type='checkbox' name='subgroups[]' id='' class='subgroup-sec' onchange='fetchGroupPosts(".$group_id.")' value='".$grp_id."' />&nbsp;&nbsp;<span class='grp-names'>".$group_name."</span></br>";
+                            } 
+	                    }
+                    catch(PDOException $e)	{
+	
+                    }
 						?>
 					
 				</div></br>
@@ -138,11 +151,13 @@ else
 					</select>
 				</div>
                 <input type="hidden" value="<?php echo $group_id; ?>" id="grp-id-val" /></br>
+                <input type="hidden" value="<?php echo $subgroup_ids; ?>" id="subgroup-id-val" /></br>
+                <input type="hidden" value="<?php echo $subgroup_all; ?>" id="subgroup-all-val" /></br>
+
 			</div>
 			<div class="col-sm-10" id="middle-container">
 				<?php
 				try	{
-					    $subgroup_list = implode(", ",$_SESSION["subgroups_all"]);
 						$sql="select t.qstn_id,
 									 t.qstn_titl,
 									 t.qstn_desc,
@@ -166,14 +181,11 @@ else
 									coalesce(max(UNIX_TIMESTAMP(d.created_ts)),0) as answer_ts,
 									coalesce(max(UNIX_TIMESTAMP(e.created_ts)),0) as comment_ts
 							 from questions a 
-                               inner join users a2
-                               on a2.user_id=a.posted_by
-                               and a2.user_id <> '".$_SESSION['user']."'
-                               and a2.subgroup_id in (".$subgroup_list.") 
                                inner join group_posts a1
                                on a.qstn_id=a1.post_id
+                               and a1.created_by <> '".$_SESSION['user']."'
                                and a1.parent_group_id=".$group_id."   
-                               and a1.group_id = ".$_SESSION["subgroup_id"]." 
+                               and a1.group_id in (".$subgroup_ids.")
 							   inner join qstn_tags b
 							   on a.qstn_id=b.qstn_id
 							   inner join tags c 
@@ -186,7 +198,6 @@ else
 							   group by a.qstn_id 
 							   order by a.created_ts desc) t
 							   order by score desc";
-							   
 								include "forum/fetch_answers1.php";
 								if($stmt->rowCount() <=0)	{
 									echo '<div class="alert alert-info">

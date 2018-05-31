@@ -71,23 +71,19 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 					$stmt_check_subgroup=$conn->prepare($sql_check_subgroup);
 					$stmt_check_subgroup->execute();
 					if($stmt_check_subgroup->rowCount()>0)	{
-						$result_code=$stmt_check_subgroup->fetch();
-						$subgroup_id=$result_code['subgroup_id'];
-						$group_id=$result_code['group_id'];
+						while($result_code=$stmt_check_subgroup->fetch())   {
+                            $subgroup_id=$result_code['subgroup_id'];
+    						$group_id=$result_code['group_id'];
+
+                            $sql_add_mbr_subgroup="insert into group_mbr (user_id,group_id,subgroup_id,created_by,last_updt_by) 
+											   values ('".$userid."',".$group_id.",".$subgroup_id.",'admin','admin')";
+						    $conn->exec($sql_add_mbr_subgroup);
+                        }
 					}
 					else	{
 						$subgroup_id=0;
                         $group_id=0;
 					}
-				#	$subgroup_id=get_group_id($subgroup);
-					if($subgroup_id <> 0)	{
-						$sql_add_mbr_subgroup="insert into group_mbr (user_id,group_id,subgroup_id,created_by,last_updt_by) 
-											   values ('".$userid."',".$group_id.",".$subgroup_id."'admin','admin')";
-						$conn->exec($sql_add_mbr_subgroup);
-						
-						$sql_updt_users="update users set subgroup_id = ".$subgroup_id." where user_id = '".$userid."'";
-						$conn->exec($sql_updt_users);                       				
-                    }						
 					
 					session_start();
 					include "session.php";	#Starting user session
@@ -96,7 +92,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 				}
 				catch(PDOException $e)	{
 					// Debug only $message = $e->getMessage();
-					$message = "Uh oh something went wrong, please try again";
+					$message = "Uh oh something went wrong, please try again ".$e->getMessage();
 				}
 			}
 			else{

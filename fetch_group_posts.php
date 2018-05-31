@@ -23,7 +23,12 @@ function convert_utc_to_local($utc_timestamp)	{
 		echo 'Some error occurred';
 	}
 }
-
+    if(isset($_POST['subgroup_ids']))    {
+        $subgroup_ids=$_POST['subgroup_ids'];
+    }
+    if(isset($_POST['subgroup_all']))    {
+        $subgroup_all=$_POST['subgroup_all'];
+    }
     if(isset($_POST['group_id']))    {
         $group_id=$_POST['group_id'];
     }
@@ -46,7 +51,7 @@ function convert_utc_to_local($utc_timestamp)	{
         $subgroup_list = implode(", ",$subgroups);   
     }
     else    {
-        $subgroup_list = implode(", ",$_SESSION["subgroups_all"]);
+        $subgroup_list = $subgroup_all;
     }
     
     try	{
@@ -78,10 +83,8 @@ function convert_utc_to_local($utc_timestamp)	{
 	         from questions a 
                inner join group_posts a1
                on a.qstn_id=a1.post_id
-               and a1.parent_group_id=".$group_id."   
-               inner join users a2
-               on a2.user_id=a.posted_by
-               and a2.user_id = '".$_SESSION['user']."'
+               and a1.parent_group_id=".$group_id."  
+               and a1.created_by = '".$_SESSION['user']."' 
 	           inner join qstn_tags b
 	           on a.qstn_id=b.qstn_id
 	           inner join tags c 
@@ -121,14 +124,15 @@ function convert_utc_to_local($utc_timestamp)	{
 			        coalesce(max(UNIX_TIMESTAMP(d.created_ts)),0) as answer_ts,
 			        coalesce(max(UNIX_TIMESTAMP(e.created_ts)),0) as comment_ts
 	         from questions a 
-               inner join users a2
-               on a2.user_id=a.posted_by
-               and a2.user_id <> '".$_SESSION['user']."'
-               and a2.subgroup_id in (".$subgroup_list.") 
                inner join group_posts a1
                on a.qstn_id=a1.post_id
                and a1.parent_group_id=".$group_id."   
-               and a1.group_id = ".$_SESSION["subgroup_id"]."               
+               and a1.group_id in (".$subgroup_ids.") 
+               and a1.created_by <> '".$_SESSION['user']."' 
+               inner join group_mbr a2
+               on a2.user_id=a1.created_by
+               and a2.group_id = a1.parent_group_id
+               and a2.subgroup_id in (".$subgroup_list.")             
 	           inner join qstn_tags b
 	           on a.qstn_id=b.qstn_id
 	           inner join tags c 
