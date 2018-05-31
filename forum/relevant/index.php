@@ -47,11 +47,6 @@ include "../functions/get_time_offset.php";
 				<?php
 					try	{
 
-                    if($_SESSION['subgroup'] == "")
-                        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
-                    else
-                        $filter_inbt_posts_cond = "";
-
 					$query_string="";
 					$sql_fetch_user_interests="select b.tag_name 
 									   from user_tags a
@@ -63,16 +58,17 @@ include "../functions/get_time_offset.php";
 					}
 					$query_string=substr($query_string,0,strlen($query_string)-1);
 					
-					$sql="select     a.qstn_id,
-								 a.qstn_titl,
-								 a.qstn_desc,
-								 a.posted_by,
-								 a.up_votes,
-								 a.down_votes,
-								 a.topic_id,
-								 a.created_ts,
-                                 a.parent_group_id,
-                                 a.group_nm
+					$sql="select   t.qstn_id
+	                              ,t.qstn_titl
+                                  ,t.qstn_desc
+                                  ,t.posted_by
+	                              ,t.up_votes
+                                  ,t.down_votes
+                                  ,t.topic_id
+                                  ,t.created_ts
+                                  ,t.parent_group_id
+                                  ,t.group_nm
+                                  ,t.subgroups
 									 
 									 from
 									 (
@@ -87,17 +83,19 @@ include "../functions/get_time_offset.php";
 									 a.created_ts,
                                      a1.parent_group_id,
                                      g.group_nm,
-									 CASE WHEN a.qstn_id=@QID then @row:=@row + 1
-										else @row:=1 
-									END as rnum,
-									@qid:=a.qstn_id
+									 group_concat(distinct k.user_id order by k.user_id asc separator ' ') as user_ids,
+                                     group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
 									
-									FROM (select @row:=0,@qid:=0) t,
-									questions a 
-                                    left outer join group_posts a1
-                                    on a1.post_id = a.qstn_id    
-                                    left outer join groups g
+									from questions a 
+                                    inner join group_posts a1 
+                                    on a1.post_id = a.qstn_id 
+                                    left outer join group_mbr k
+                                    on k.subgroup_id = a1.group_id
+                                    and k.user_id = '".$_SESSION['user']."'
+                                    inner join groups g 
                                     on g.group_id = a1.parent_group_id
+                                    left outer join groups h
+                                    on h.group_id = a1.group_id 
 									inner join qstn_tags b
 									on a.qstn_id=b.qstn_id
 									inner join tags c 
@@ -105,12 +103,23 @@ include "../functions/get_time_offset.php";
 									left outer join user_tags d
 									on d.tag_id=c.tag_id
 									and d.user_id='".$_SESSION['user']."' 
-									where a.posted_by<>'".$_SESSION['user']."' ".$filter_inbt_posts_cond."
+									where a.posted_by<>'".$_SESSION['user']."'
 									and match(a.qstn_titl,a.qstn_desc) against ('".$query_string."' in NATURAL LANGUAGE MODE)
-									) a
-									where a.rnum=1
-									order by a.created_ts
-									limit 10";
+
+                                    group by a.qstn_id
+		                            ,a.qstn_titl
+                                    ,a.qstn_desc
+                                    ,a.posted_by
+                                    ,a.up_votes
+                                    ,a.down_votes
+		                            ,a.topic_id
+                                    ,a.created_ts
+                                    ,a1.parent_group_id
+                                    ,g.group_nm 
+                                   
+                            order by a.created_ts desc
+									) t
+									where (t.parent_group_id = 0 or t.user_ids is not null) limit 10";
 					
 						include "../fetch_answers1.php";
 						if($stmt->rowCount() <=0)	{
@@ -119,32 +128,57 @@ include "../functions/get_time_offset.php";
 								  </div>';
 							}
 						$qstn_array=array();
-						$sql_fetch_all_qstn = "select a.qstn_id,
-														  a.created_ts
-												   from
-													 (
-													select 
-													 a.qstn_id,													 
-													 a.created_ts,
-													 CASE WHEN a.qstn_id=@QID then @row:=@row + 1
-														else @row:=1 
-													END as rnum,
-													@qid:=a.qstn_id
+						$sql_fetch_all_qstn = "select t.qstn_id
+							   from
+								 (
+								select 
+									 a.qstn_id,
+									 a.qstn_titl,
+									 a.qstn_desc,
+									 a.posted_by,
+									 a.up_votes,
+									 a.down_votes,
+									 a.topic_id,
+									 a.created_ts,
+                                     a1.parent_group_id,
+                                     g.group_nm,
+									 group_concat(distinct k.user_id order by k.user_id asc separator ' ') as user_ids,
+                                     group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
 													
-													FROM (select @row:=0,@qid:=0) t,
-													questions a 
-													inner join qstn_tags b
-													on a.qstn_id=b.qstn_id
-													inner join tags c 
-													on b.tag_id=c.tag_id
-													left outer join user_tags d
-													on d.tag_id=c.tag_id
-													and d.user_id='".$_SESSION['user']."' 
-													where a.posted_by<>'".$_SESSION['user']."' ".$filter_inbt_posts_cond."
-													and match(a.qstn_titl,a.qstn_desc) against ('".$query_string."' in NATURAL LANGUAGE MODE)
-													) a
-													where a.rnum=1
-													order by a.created_ts";
+									from questions a 
+                                    inner join group_posts a1 
+                                    on a1.post_id = a.qstn_id 
+                                    left outer join group_mbr k
+                                    on k.subgroup_id = a1.group_id
+                                    and k.user_id = '".$_SESSION['user']."'
+                                    inner join groups g 
+                                    on g.group_id = a1.parent_group_id
+                                    left outer join groups h
+                                    on h.group_id = a1.group_id 
+					                inner join qstn_tags b
+					                on a.qstn_id=b.qstn_id
+					                inner join tags c 
+					                on b.tag_id=c.tag_id
+					                left outer join user_tags d
+					                on d.tag_id=c.tag_id
+					                and d.user_id='".$_SESSION['user']."' 
+					                where a.posted_by<>'".$_SESSION['user']."'
+					                and match(a.qstn_titl,a.qstn_desc) against ('".$query_string."' in NATURAL LANGUAGE MODE)
+
+                                    group by a.qstn_id
+                                    ,a.qstn_titl
+                                    ,a.qstn_desc
+                                    ,a.posted_by
+                                    ,a.up_votes
+                                    ,a.down_votes
+                                    ,a.topic_id
+                                    ,a.created_ts
+                                    ,a1.parent_group_id
+                                    ,g.group_nm 
+                                   
+                            order by a.created_ts desc
+					                ) t
+					                where (t.parent_group_id = 0 or t.user_ids is not null)";
 						foreach($conn->query($sql_fetch_all_qstn) as $row_qid)	{
 							$row_qstn_id=$row_qid['qstn_id'];
 							array_push($qstn_array,$row_qstn_id);

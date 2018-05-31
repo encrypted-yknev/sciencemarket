@@ -40,16 +40,6 @@ $(document).ready(function()	{
 			
 	});
 
-    $("#check-all").change(function()   {
-        if(this.checked)    {
-            $(".subgroup-sec").attr("disabled","disabled");
-            $(".grp-names").css("color","#ddd");
-        }
-        else    {
-            $(".subgroup-sec").removeAttr("disabled");
-            $(".grp-names").css("color","#000");
-        }
-    });
 	
 	$(document).on("click","#menu-bar",function()	{
 		/* $("#side-bar").css({"width":"80%","position":"relative","margin-left":"2%"});
@@ -91,6 +81,19 @@ $(document).ready(function()	{
 	
 });
 
+function changeSubgroups()  {
+    var id=$("input#check-all");
+    if(id.checked)    {
+        alert("hello");
+        $(".subgroup-sec").attr("disabled","disabled");
+        $(".grp-names").css("color","#ddd");
+    }
+    else    {
+        alert("world");
+        $(".subgroup-sec").removeAttr("disabled");
+        $(".grp-names").css("color","#000");
+    }
+}
 
 function validateUser(flag)	{
 	if(flag==0)	{
@@ -198,7 +201,18 @@ function getSubTopics(topic_id)	{
 
 function getSubgroups(group_id)	{
 	if(group_id > 0)    {
-        $("#subgroup-choose-sec").show();
+        $.ajax({
+			type:"post",
+			url:"get_sub_groups.php",
+			data:
+			{
+				"group_id":group_id
+			},
+			success:function(result)	{
+				$("#subgroup-choose-sec").html("Visible to : </br>"+result);
+                $("#subgroup-choose-sec").show();
+			}
+		});
     }
     else    {
         $("#subgroup-choose-sec").hide();

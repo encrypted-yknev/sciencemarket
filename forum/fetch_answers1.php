@@ -31,12 +31,14 @@ else if($count_slash==4)
 			$down_votes=$row['down_votes'];
             $parent_group_id = $row["parent_group_id"];
             $group_name=$row['group_nm'];
+            $qstn_subgroups=$row['subgroups'];
 				?>
-				<div class="qstn_row">
-				<?php if($parent_group_id > 0)  {
-                        echo '<div class="badge grp-disp">'.$group_name.'</div>';
-                      }
-                ?>
+				<div class="qstn_row">      
+				<?php
+                    if($parent_group_id > 0)  {
+                        echo '<div class="badge grp-disp"><div class="group-nm">'.$group_name.'</div><span class="glyphicon glyphicon-eye-open"></span> '.$qstn_subgroups.'</div>';
+                    }                    
+                 ?>
 				<div class="qstn-topic-section">
 					<?php
 						try	{
@@ -59,13 +61,14 @@ else if($count_slash==4)
 						catch(PDOException $e)	{
 							
 						}
+                        
+                        echo "</br></br>";
 						$user_id_fetch=$posted_by;
 						
 						include $slashes."fetch_user_dtls.php";
 					?>
 				</div>
                 
-                   
 				<div class="user-img-section" onmouseleave='showUserCard(event,1,<?php echo $qid; ?>,"q")' onmouseenter='showUserCard(event,0,<?php echo $qid; ?>,"q")' style="background-image:url('<?php echo $img_url; ?>'); background-size:cover;">
 					
 				</div>

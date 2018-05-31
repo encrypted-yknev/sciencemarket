@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")	{
 	$group_id=(int)trim($_POST['qgroups']);
 	$subgroup_list=$_POST['subgroups'];
 	$request_typ=0;
-	if(!empty($q_topic_id) && !empty($q_titl) && !empty($q_desc) && !empty($tags) && !empty($group_id))	{
+	if(!empty($q_topic_id) && !empty($q_titl) && !empty($q_desc) && !empty($tags))	{
 		if(($group_id > 0 && !empty($subgroup_list)) or ($group_id == 0))	{
 
 			if($group_id == 0)	{
@@ -44,7 +44,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")	{
 														@err_cd,
 														@err_desc)";
 
-				
 				$stmt_call_sp_post_qstn=$conn->prepare($sql_call_sp_post_qstn);
 				$stmt_call_sp_post_qstn->bindParam(':user_id',$_SESSION['user'],PDO::PARAM_STR, 50);			
 				$stmt_call_sp_post_qstn->bindParam(':request_typ',$request_typ,PDO::PARAM_INT);				
@@ -354,9 +353,10 @@ function get_group_list($subgroup_char) {
 				</div></br>
 				<div id="tag-res"></div></br>
                 
-                <?php if($_SESSION['subgroup'] <> "")   { ?>
+                <?php if($_SESSION["is_group_user"] == 1)   { ?>
 				Choose group where you want to post :
 				<select class="form-control" id="q-groups" style="width:50%;" name="qgroups" onchange="getSubgroups(this.value)" onfocus="getInputInfo(6)">
+                    <option value="0">Public</option>
 					<?php
 						try	{	
 							$sql_fetch_groups="select a.group_id,
@@ -378,44 +378,8 @@ function get_group_list($subgroup_char) {
 					?>
 				</select></br>
 				<div id="subgroup-choose-sec">
-                Visible to : </br>
-                <?php                     
-                    
-                    if($_SESSION['subgroup']=='A')  {
-                        $group_id_inp=5;
-                        $group_list=implode(", ",$_SESSION['subgroups_a']);
-                    }
-                    else if($_SESSION['subgroup']=='F') {
-                        $group_id_inp=5;
-                        $group_list=implode(", ",$_SESSION['subgroups_f']);
-                    }
-                    else if($_SESSION['subgroup']=='U') {
-                        $group_id_inp=5;
-                        $group_list=implode(", ",$_SESSION['subgroups_u']);
-                    }
-                    else if($_SESSION['subgroup']=='G') {
-                        $group_id_inp=4;
-                        $group_list=implode(", ",$_SESSION['subgroups_g']);
-                    }                        
-                    else if($_SESSION['subgroup']=='P') {
-                        $group_id_inp=6;    
-                        $group_list=implode(", ",$_SESSION['subgroups_p']);
-                    }
-                    try {
-                        $sql_fetch_group_names = "select * from groups where subgroup_ind = 'Y'  and group_id in (".$group_list.")";
-                        echo "<input type='checkbox' name='subgroups[]' id='check-all' class='all-sec' value='".implode(", ",$_SESSION['subgroups_all'])."' />&nbsp;&nbsp;All</br>";
-                        foreach($conn->query($sql_fetch_group_names) as $row_group)   {
-                            $group_name = $row_group["group_nm"];
-                            $group_id = $row_group["group_id"];
-
-                            echo "<input type='checkbox' name='subgroups[]' id='' class='subgroup-sec' value='".$group_id."' />&nbsp;&nbsp;<span class='grp-names'>".$group_name."</span></br>";
-                        }   
-                    }
-                    catch(PDOException $e)  {
-                        echo "error occurred";
-                    }
-                 ?>
-				 </div></br><?php } ?>
+				</div>
+                </br><?php } ?>
 				<p><em>Before submitting, do check out for tips on how to use tags (Message box) by placing your cursor on the tags textbox and some related questions you might be looking for</em></p>
 				
 				<input type="hidden" id="tags" name="tags" /> 

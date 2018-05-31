@@ -20,6 +20,8 @@ $(document).ready(function()    {
             {   
                 "group_id":document.getElementById("grp-id-val").value,
                 "sort":document.getElementById("sort-id").value,
+                "subgroup_ids":document.getElementById("subgroup-id-val").value,
+                "subgroup_all":document.getElementById("subgroup-all-val").value,
                 "subgroups":subgroups
             },
             beforeSend:function()   {
@@ -45,6 +47,8 @@ function fetchGroupPosts(groupId)   {
         data:
         {   
             "group_id":groupId,
+            "subgroup_all":document.getElementById("subgroup-all-val").value,
+            "subgroup_ids":document.getElementById("subgroup-id-val").value,
             "sort":document.getElementById("sort-id").value,
             "subgroups":subgroups
         },

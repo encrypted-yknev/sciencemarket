@@ -51,200 +51,232 @@ include "functions/get_time_offset.php";
 				
 				<?php
 					try	{
-                    if($_SESSION['subgroup'] == "")
-                        $filter_inbt_posts_cond = "and a1.parent_group_id is NULL";
-                    else
-                        $filter_inbt_posts_cond = "";
-					if($logged_in == 1)	{
-						if(isset($_GET['tag']))	{
+					
+                        if($logged_in == 1)	{
+						
+                        if(isset($_GET['tag']))	{
 							$url_tag_id=$_GET['tag'];
-							$sql="select  a.qstn_id,
-										 a.qstn_titl,
-										 a.qstn_desc,
-										 a.posted_by,
-										 a.up_votes,
-										 a.down_votes,
-										 a.topic_id,
-										 a.created_ts,
-                                         a1.parent_group_id,
-                                         g.group_nm 
-								from questions a
-                                left outer join group_posts a1
+							$sql="select   t.qstn_id
+	                                      ,t.qstn_titl
+                                          ,t.qstn_desc
+                                          ,t.posted_by
+	                                      ,t.up_votes
+                                          ,t.down_votes
+                                          ,t.topic_id
+                                          ,t.created_ts
+                                          ,t.parent_group_id
+                                          ,t.group_nm
+                                          ,t.subgroups
+
+                            from (select   a.qstn_id
+	                                      ,a.qstn_titl
+                                          ,a.qstn_desc
+                                          ,a.posted_by
+                                          ,a.up_votes
+                                          ,a.down_votes
+                                          ,a.topic_id
+                                          ,a.created_ts
+	                                      ,a1.parent_group_id
+                                          ,g.group_nm
+                                          ,group_concat(distinct k.user_id order by k.user_id asc separator ' ') as user_ids
+                                          ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+
+								from questions a 
+                                inner join group_posts a1 
                                 on a1.post_id = a.qstn_id 
-                                left outer join groups g
+                                left outer join group_mbr k
+                                on k.subgroup_id = a1.group_id
+                                and k.user_id = '".$_SESSION['user']."'
+                                inner join groups g 
                                 on g.group_id = a1.parent_group_id
+                                left outer join groups h
+                                on h.group_id = a1.group_id 
 								inner join qstn_tags b 
 								on a.qstn_id = b.qstn_id
-								where b.tag_id = ".$url_tag_id." ".$filter_inbt_posts_cond."
-                                group by  a.qstn_id,
-	                                      a.qstn_titl,
-	                                      a.qstn_desc,
-	                                      a.posted_by,
-	                                      a.topic_id,
-	                                      a.up_votes,
-	                                      a.down_votes,
-	                                      a.created_ts,
-	                                      a1.parent_group_id,
-	                                      g.group_nm" ;
+								where b.tag_id = ".$url_tag_id."
+                                and a.posted_by <> '".$_SESSION['user']."'
+                                group by a.qstn_id
+	                                    ,a.qstn_titl
+                                        ,a.qstn_desc
+                                        ,a.posted_by
+                                        ,a.up_votes
+                                        ,a.down_votes
+	                                    ,a.topic_id
+                                        ,a.created_ts
+                                        ,a1.parent_group_id
+                                        ,g.group_nm 
+                                order by a.created_ts desc
+                            ) t 
+                            where (t.parent_group_id = 0 or t.user_ids is not null)
+                            limit 10" ;
 						}
 						else	{
-					/* $query_string="";
-					$sql_fetch_user_interests="select b.tag_name 
-									   from user_tags a
-									   inner join tags b
-									   on a.tag_id=b.tag_id
-									   where a.user_id='".$_SESSION['user']."'";
-					foreach($conn->query($sql_fetch_user_interests) as $result_user_interest)	{
-						$query_string=$query_string.$result_user_interest['tag_name']." ";
-					}
-					$query_string=substr($query_string,0,strlen($query_string)-1); */
-					$sql="select  a.qstn_id,
-								  a.qstn_titl,
-								  a.qstn_desc,
-								  a.posted_by,
-								  a.topic_id,
-								  a.up_votes,
-								  a.down_votes,
-								  a.created_ts,
-                                  a1.parent_group_id,
-                                  g.group_nm 
-						from questions a
-                        left outer join group_posts a1
-                        on a1.post_id = a.qstn_id   
-                        left outer join groups g
-                        on g.group_id = a1.parent_group_id
-                        where 1 = 1 ".$filter_inbt_posts_cond."
-                        group by  a.qstn_id,
-	                              a.qstn_titl,
-	                              a.qstn_desc,
-	                              a.posted_by,
-	                              a.topic_id,
-	                              a.up_votes,
-	                              a.down_votes,
-	                              a.created_ts,
-	                              a1.parent_group_id,
-	                              g.group_nm 
-						order by a.created_ts desc limit 10"; 
+					
+					$sql="select   t.qstn_id
+	                              ,t.qstn_titl
+                                  ,t.qstn_desc
+                                  ,t.posted_by
+	                              ,t.up_votes
+                                  ,t.down_votes
+                                  ,t.topic_id
+                                  ,t.created_ts
+                                  ,t.parent_group_id
+                                  ,t.group_nm
+                                  ,t.subgroups
+
+                            from (
+                            select a.qstn_id
+	                              ,a.qstn_titl
+                                  ,a.qstn_desc
+                                  ,a.posted_by
+                                  ,a.up_votes
+                                  ,a.down_votes
+                                  ,a.topic_id
+                                  ,a.created_ts
+	                              ,a1.parent_group_id
+                                  ,g.group_nm
+                                  ,group_concat(distinct k.user_id order by k.user_id asc separator ' ') as user_ids
+                                  ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+                            from questions a 
+                            inner join group_posts a1 
+                            on a1.post_id = a.qstn_id 
+                            left outer join group_mbr k
+                            on k.subgroup_id = a1.group_id
+                            and k.user_id = '".$_SESSION['user']."'
+                            inner join groups g 
+                            on g.group_id = a1.parent_group_id
+                            left outer join groups h
+                            on h.group_id = a1.group_id 
+                            inner join qstn_tags b 
+                            on a.qstn_id=b.qstn_id 
+                            inner join tags c 
+                            on b.tag_id=c.tag_id 
+                            where a.posted_by <> '".$_SESSION['user']."' 
+
+                            group by a.qstn_id
+		                            ,a.qstn_titl
+                                    ,a.qstn_desc
+                                    ,a.posted_by
+                                    ,a.up_votes
+                                    ,a.down_votes
+		                            ,a.topic_id
+                                    ,a.created_ts
+                                    ,a1.parent_group_id
+                                    ,g.group_nm 
+                                   
+                            order by a.created_ts desc
+                            ) t 
+                            where (t.parent_group_id = 0 or t.user_ids is not null) limit 10"; 
 						
-					/* $sql="select     a.qstn_id,
-								 a.qstn_titl,
-								 a.qstn_desc,
-								 a.posted_by,
-								 a.up_votes,
-								 a.down_votes,
-								 a.topic_id,
-								 a.created_ts
-									 
-									 from
-									 (
-									select 
-									 a.qstn_id,
-									 a.qstn_titl,
-									 a.qstn_desc,
-									 a.posted_by,
-									 a.up_votes,
-									 a.down_votes,
-									 a.topic_id,
-									 a.created_ts,
-									 CASE WHEN a.qstn_id=@QID then @row:=@row + 1
-										else @row:=1 
-									END as rnum,
-									@qid:=a.qstn_id
-									
-									FROM (select @row:=0,@qid:=0) t,
-									questions a 
-									inner join qstn_tags b
-									on a.qstn_id=b.qstn_id
-									inner join tags c 
-									on b.tag_id=c.tag_id
-									left outer join user_tags d
-									on d.tag_id=c.tag_id
-									and d.user_id='".$_SESSION['user']."' 
-									where a.posted_by<>'".$_SESSION['user']."'
-									and match(a.qstn_titl,a.qstn_desc) against ('".$query_string."' in NATURAL LANGUAGE MODE)
-									) a
-									where a.rnum=1
-									order by a.created_ts
-									limit 10
-									"; */
 						}
 					} 
 					else	{
 						if(isset($_GET['tag']))	{
 							$url_tag_id=$_GET['tag'];   
-							$sql="select a.qstn_id,
-										 a.qstn_titl,
-										 a.qstn_desc,
-										 a.posted_by,
-										 a.up_votes,
-										 a.down_votes,
-										 a.topic_id,
-										 a.created_ts,
-                                         a1.parent_group_id,
-                                         g.group_nm 
-								from questions a
-                                left outer join group_posts a1
+							$sql="select   t.qstn_id
+	                                      ,t.qstn_titl
+                                          ,t.qstn_desc
+                                          ,t.posted_by
+	                                      ,t.up_votes
+                                          ,t.down_votes
+                                          ,t.topic_id
+                                          ,t.created_ts
+                                          ,t.parent_group_id
+                                          ,t.group_nm
+                                          ,t.subgroups
+
+                            from (select   a.qstn_id
+	                                      ,a.qstn_titl
+                                          ,a.qstn_desc
+                                          ,a.posted_by
+                                          ,a.up_votes
+                                          ,a.down_votes
+                                          ,a.topic_id
+                                          ,a.created_ts
+	                                      ,a1.parent_group_id
+                                          ,g.group_nm
+                                          ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+
+								from questions a 
+                                inner join group_posts a1 
                                 on a1.post_id = a.qstn_id 
-                                left outer join groups g
+                                inner join groups g 
                                 on g.group_id = a1.parent_group_id
+                                left outer join groups h
+                                on h.group_id = a1.group_id 
 								inner join qstn_tags b 
 								on a.qstn_id = b.qstn_id
-								where b.tag_id = ".$url_tag_id." ".$filter_inbt_posts_cond."
-                                group by  a.qstn_id,
-                                          a.qstn_titl,
-                                          a.qstn_desc,
-                                          a.posted_by,
-                                          a.topic_id,
-                                          a.up_votes,
-                                          a.down_votes,
-                                          a.created_ts,
-                                          a1.parent_group_id,
-                                          g.group_nm";
+								where b.tag_id = ".$url_tag_id."
+                                group by a.qstn_id
+	                                    ,a.qstn_titl
+                                        ,a.qstn_desc
+                                        ,a.posted_by
+                                        ,a.up_votes
+                                        ,a.down_votes
+	                                    ,a.topic_id
+                                        ,a.created_ts
+                                        ,a1.parent_group_id
+                                        ,g.group_nm 
+                                order by a.created_ts desc
+                            ) t 
+                            limit 10";
 						}
 						else	{
-							$sql="select t.qstn_id,
-							   t.qstn_titl,
-							   t.qstn_desc,
-							   t.posted_by,
-							   t.topic_id,
-							   t.up_votes,
-							   t.down_votes,
-							   t.created_ts,
-							   t.answer_ts,
-							   t.comment_ts,
-                               t.parent_group_id, 
-                               t.group_nm,
-							   (case when t.answer_ts >= t.comment_ts then t.answer_ts
-									else t.comment_ts
-							   end) score
-							from
-							(select a.qstn_id,
-								   a.qstn_titl,
-								   a.qstn_desc,
-								   a.posted_by,
-								   a.topic_id,
-								   a.up_votes,
-								   a.down_votes,
-								   a.created_ts,
-                                   a1.parent_group_id,
-                                   g.group_nm, 
-								   coalesce(max(b.created_ts),0) as answer_ts,
-								   coalesce(max(c.created_ts),0) as comment_ts
-							from questions a
-                            left outer join group_posts a1
-                            on a1.post_id = a.qstn_id    
-                            left outer join groups g
-                            on g.group_id = a1.parent_group_id
-							left join answers b 
-							on a.qstn_id = b.qstn_id 
-							left outer join comments c 
-							on c.ans_id = b.ans_id 
-                            where 1 = 1 ".$filter_inbt_posts_cond." 
-							group by a.qstn_id, a.qstn_titl, a.qstn_desc, a.posted_by, a.up_votes, 
-                                     a.down_votes, a.topic_id, a.created_ts, a1.parent_group_id, g.group_nm 
-							ORDER BY answer_ts desc,comment_ts desc) t
-							order by score desc
-							limit 10";
+							$sql="select   t.qstn_id
+	                                  ,t.qstn_titl
+                                      ,t.qstn_desc
+                                      ,t.posted_by
+	                                  ,t.up_votes
+                                      ,t.down_votes
+                                      ,t.topic_id
+                                      ,t.created_ts
+                                      ,t.parent_group_id
+                                      ,t.group_nm
+                                      ,t.subgroups
+                                      ,(case when t.answer_ts >= t.comment_ts then t.answer_ts else t.comment_ts end) score		
+							from (
+                                select a.qstn_id
+                                      ,a.qstn_titl
+                                      ,a.qstn_desc
+                                      ,a.posted_by
+                                      ,a.up_votes
+                                      ,a.down_votes
+                                      ,a.topic_id
+                                      ,a.created_ts
+                                      ,coalesce(max(UNIX_TIMESTAMP(d.created_ts)),0) as answer_ts 
+                                      ,coalesce(max(UNIX_TIMESTAMP(e.created_ts)),0) as comment_ts
+                                      ,a1.parent_group_id
+                                      ,g.group_nm
+                                      ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+                                from questions a 
+                                inner join group_posts a1 
+                                on a1.post_id = a.qstn_id 
+                                inner join groups g 
+                                on g.group_id = a1.parent_group_id
+                                left outer join groups h
+                                on h.group_id = a1.group_id 
+                                inner join qstn_tags b 
+                                on a.qstn_id=b.qstn_id 
+                                inner join tags c 
+                                on b.tag_id=c.tag_id 
+                                left outer join answers d 
+                                on d.qstn_id = a.qstn_id 
+                                left outer join comments e 
+                                on e.ans_id = d.ans_id 
+							    
+                                group by  a.qstn_id
+		                                ,a.qstn_titl
+                                        ,a.qstn_desc
+                                        ,a.posted_by
+                                        ,a.up_votes
+                                        ,a.down_votes
+		                                ,a.topic_id
+                                        ,a.created_ts
+                                        ,a1.parent_group_id
+                                        ,g.group_nm 
+                                
+                                ) t 
+                                order by score desc limit 10";
 							}
 						}
 						include "fetch_answers1.php";
@@ -256,90 +288,182 @@ include "functions/get_time_offset.php";
 						$qstn_array=array();
 						if($logged_in == 1)	{
 							if(isset($_GET['tag']))	{
-								$sql_fetch_all_qstn="select distinct a.qstn_id 
-													from questions a
-                                                    left outer join group_posts a1
-                                                    on a1.post_id = a.qstn_id    
-                                                    left outer join groups g
+								$sql_fetch_all_qstn="select   t.qstn_id
+
+                                                from (select   a.qstn_id
+	                                                          ,a.qstn_titl
+                                                              ,a.qstn_desc
+                                                              ,a.posted_by
+                                                              ,a.up_votes
+                                                              ,a.down_votes
+                                                              ,a.topic_id
+                                                              ,a.created_ts
+	                                                          ,a1.parent_group_id
+                                                              ,g.group_nm
+                                                              ,group_concat(distinct k.user_id order by k.user_id asc separator ' ') as user_ids
+                                                              ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+
+								                    from questions a 
+                                                    inner join group_posts a1 
+                                                    on a1.post_id = a.qstn_id 
+                                                    left outer join group_mbr k
+                                                    on k.subgroup_id = a1.group_id
+                                                    and k.user_id = '".$_SESSION['user']."'
+                                                    inner join groups g 
                                                     on g.group_id = a1.parent_group_id
-													inner join qstn_tags b 
-													on a.qstn_id = b.qstn_id
-													where b.tag_id=".$_GET['tag']." ".$filter_inbt_posts_cond."
-                                                    group by a.qstn_id";
+                                                    left outer join groups h
+                                                    on h.group_id = a1.group_id 
+								                    inner join qstn_tags b 
+								                    on a.qstn_id = b.qstn_id
+								                    where b.tag_id = ".$url_tag_id."
+                                                    and a.posted_by <> '".$_SESSION['user']."'
+                                                    group by a.qstn_id
+	                                                        ,a.qstn_titl
+                                                            ,a.qstn_desc
+                                                            ,a.posted_by
+                                                            ,a.up_votes
+                                                            ,a.down_votes
+	                                                        ,a.topic_id
+                                                            ,a.created_ts
+                                                            ,a1.parent_group_id
+                                                            ,g.group_nm 
+                                                    order by a.created_ts desc
+                                                ) t 
+                                                where (t.parent_group_id = 0 or t.user_ids is not null)";
 							}
 							else	{
-							$sql_fetch_all_qstn = "select a.qstn_id
-										from questions a
-                                        left outer join group_posts a1
-                                        on a1.post_id = a.qstn_id    
-                                        left outer join groups g
+							$sql_fetch_all_qstn = "select   t.qstn_id
+
+                                        from (
+                                        select a.qstn_id
+	                                          ,a.qstn_titl
+                                              ,a.qstn_desc
+                                              ,a.posted_by
+                                              ,a.up_votes
+                                              ,a.down_votes
+                                              ,a.topic_id
+                                              ,a.created_ts
+	                                          ,a1.parent_group_id
+                                              ,g.group_nm
+                                              ,group_concat(distinct k.user_id order by k.user_id asc separator ' ') as user_ids
+                                              ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+                                        from questions a 
+                                        inner join group_posts a1 
+                                        on a1.post_id = a.qstn_id 
+                                        left outer join group_mbr k
+                                        on k.subgroup_id = a1.group_id
+                                        and k.user_id = '".$_SESSION['user']."'
+                                        inner join groups g 
                                         on g.group_id = a1.parent_group_id
-                                        where 1 = 1 ".$filter_inbt_posts_cond."
+                                        left outer join groups h
+                                        on h.group_id = a1.group_id 
+                                        inner join qstn_tags b 
+                                        on a.qstn_id=b.qstn_id 
+                                        inner join tags c 
+                                        on b.tag_id=c.tag_id 
+                                        where a.posted_by <> '".$_SESSION['user']."' 
+
                                         group by a.qstn_id
-										order by a.created_ts desc";
-							/* $sql_fetch_all_qstn = "select a.qstn_id,
-														  a.created_ts
-												   from
-													 (
-													select 
-													 a.qstn_id,													 
-													 a.created_ts,
-													 CASE WHEN a.qstn_id=@QID then @row:=@row + 1
-														else @row:=1 
-													END as rnum,
-													@qid:=a.qstn_id
-													
-													FROM (select @row:=0,@qid:=0) t,
-													questions a 
-													inner join qstn_tags b
-													on a.qstn_id=b.qstn_id
-													inner join tags c 
-													on b.tag_id=c.tag_id
-													left outer join user_tags d
-													on d.tag_id=c.tag_id
-													and d.user_id='".$_SESSION['user']."' 
-													where a.posted_by<>'".$_SESSION['user']."'
-													and match(a.qstn_titl,a.qstn_desc) against ('".$query_string."' in NATURAL LANGUAGE MODE)
-													) a
-													where a.rnum=1
-													order by a.created_ts"; */
+		                                        ,a.qstn_titl
+                                                ,a.qstn_desc
+                                                ,a.posted_by
+                                                ,a.up_votes
+                                                ,a.down_votes
+		                                        ,a.topic_id
+                                                ,a.created_ts
+                                                ,a1.parent_group_id
+                                                ,g.group_nm 
+                                               
+                                        order by a.created_ts desc
+                                        ) t 
+                                        where (t.parent_group_id = 0 or t.user_ids is not null)";
 							}
 						}
 						else	{
 							if(isset($_GET['tag']))	{
-								$sql_fetch_all_qstn="select distinct a.qstn_id 
-													from questions a
-                                                    left outer join group_posts a1
-                                                    on a1.post_id = a.qstn_id    
-                                                    left outer join groups g
-                                                    on g.group_id = a1.parent_group_id
-													inner join qstn_tags b 
-													on a.qstn_id = b.qstn_id
-													where b.tag_id=".$_GET['tag']." ".$filter_inbt_posts_cond." 
-                                                    group by a.qstn_id";
+								$sql_fetch_all_qstn="select   t.qstn_id
+
+                                            from (select   a.qstn_id
+	                                                      ,a.qstn_titl
+                                                          ,a.qstn_desc
+                                                          ,a.posted_by
+                                                          ,a.up_votes
+                                                          ,a.down_votes
+                                                          ,a.topic_id
+                                                          ,a.created_ts
+	                                                      ,a1.parent_group_id
+                                                          ,g.group_nm
+                                                          ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+
+								                from questions a 
+                                                inner join group_posts a1 
+                                                on a1.post_id = a.qstn_id 
+                                                inner join groups g 
+                                                on g.group_id = a1.parent_group_id
+                                                left outer join groups h
+                                                on h.group_id = a1.group_id 
+								                inner join qstn_tags b 
+								                on a.qstn_id = b.qstn_id
+								                where b.tag_id = ".$_GET['tag']."
+                                                group by a.qstn_id
+	                                                    ,a.qstn_titl
+                                                        ,a.qstn_desc
+                                                        ,a.posted_by
+                                                        ,a.up_votes
+                                                        ,a.down_votes
+	                                                    ,a.topic_id
+                                                        ,a.created_ts
+                                                        ,a1.parent_group_id
+                                                        ,g.group_nm 
+                                                order by a.created_ts desc
+                                            ) t ";
 							}
 							else	{
-								$sql_fetch_all_qstn = "select t.qstn_id,
-							   (case when t.answer_ts >= t.comment_ts then t.answer_ts
-									else t.comment_ts
-							   end) score
-								from
-								(select a.qstn_id,
-									   coalesce(max(b.created_ts),0) as answer_ts,
-									   coalesce(max(c.created_ts),0) as comment_ts
-								from questions a
-                                left outer join group_posts a1
-                                on a1.post_id = a.qstn_id    
-                                left outer join groups g
+								$sql_fetch_all_qstn = "select   t.qstn_id
+                                      ,(case when t.answer_ts >= t.comment_ts then t.answer_ts else t.comment_ts end) score		
+							from (
+                                select a.qstn_id
+                                      ,a.qstn_titl
+                                      ,a.qstn_desc
+                                      ,a.posted_by
+                                      ,a.up_votes
+                                      ,a.down_votes
+                                      ,a.topic_id
+                                      ,a.created_ts
+                                      ,coalesce(max(UNIX_TIMESTAMP(d.created_ts)),0) as answer_ts 
+                                      ,coalesce(max(UNIX_TIMESTAMP(e.created_ts)),0) as comment_ts
+                                      ,a1.parent_group_id
+                                      ,g.group_nm
+                                      ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
+                                from questions a 
+                                inner join group_posts a1 
+                                on a1.post_id = a.qstn_id 
+                                inner join groups g 
                                 on g.group_id = a1.parent_group_id
-								left join answers b 
-								on a.qstn_id = b.qstn_id 
-								left outer join comments c 
-								on c.ans_id = b.ans_id
-                                where 1 = 1 ".$filter_inbt_posts_cond."
-								group by a.qstn_id
-								ORDER BY answer_ts desc,comment_ts desc) t
-								order by score desc";
+                                left outer join groups h
+                                on h.group_id = a1.group_id 
+                                inner join qstn_tags b 
+                                on a.qstn_id=b.qstn_id 
+                                inner join tags c 
+                                on b.tag_id=c.tag_id 
+                                left outer join answers d 
+                                on d.qstn_id = a.qstn_id 
+                                left outer join comments e 
+                                on e.ans_id = d.ans_id 
+							    
+                                group by  a.qstn_id
+		                                ,a.qstn_titl
+                                        ,a.qstn_desc
+                                        ,a.posted_by
+                                        ,a.up_votes
+                                        ,a.down_votes
+		                                ,a.topic_id
+                                        ,a.created_ts
+                                        ,a1.parent_group_id
+                                        ,g.group_nm 
+                                
+                                ) t 
+                                order by score desc";
 							}
 						}
 						foreach($conn->query($sql_fetch_all_qstn) as $row_qid)	{
