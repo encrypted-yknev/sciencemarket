@@ -2,7 +2,7 @@
 
 /*	Connection parameters to connect to mysqlDb */
 $username="root";
-$password="123";
+$password="mysqlroot";
 $servername="localhost";
 $dbname = "smdev_test"; //Set your database name here. No hardcoding.
 
