@@ -107,7 +107,7 @@ include "../functions/get_time_offset.php";
                             order by a.created_ts desc
                             ) t 
                             where (t.parent_group_id = 0 or t.user_ids is not null) limit 10"; 
-						echo $sql;
+						
 					include "../fetch_answers1.php";
 					if($stmt->rowCount() <=0)	{
 						echo '<div class="alert alert-info">
