@@ -12,7 +12,7 @@ try	{
 }
 
 catch(PDOException $e)	{
-	echo "Error in connection. Please try after some time.";
+	echo "Error in connection. Please try after some time. ".$e->getMessage();
 }
 
 ?>
