@@ -85,9 +85,6 @@ try	{
 					$stmt2=$conn->prepare($sql_user_updt);
 					$stmt2->execute();
 					
-					if($stmt1->rowCount()>0)	{
-						$_SESSION[''.$col_name.'']=$user_votes;
-						echo "Internal server error</br>";
 					}
 				}
 				catch(PDOException $e)	{
