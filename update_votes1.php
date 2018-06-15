@@ -85,7 +85,6 @@ try	{
 					$stmt2=$conn->prepare($sql_user_updt);
 					$stmt2->execute();
 					
-					}
 				}
 				catch(PDOException $e)	{
 					
