@@ -527,7 +527,7 @@ else	{
 								foreach($conn->query($sql_fetch_sub_topics) as $row_sub_topics)	{
 									$sub_topic_name = $row_sub_topics['topic_desc'];
 									$sub_topic_id = $row_sub_topics['topic_id'];
-									echo '<option>'.$sub_topic_name.'</option>';
+									echo '<option value="'.$sub_topic_id.'">'.$sub_topic_name.'</option>';
 								}
 							}
 							catch(PDOException $e)	{
@@ -542,11 +542,11 @@ else	{
 					<div class="form-group" id="sort-section">
 						<label for="sort-values">Sort questions</label>
 						<select class="form-control dropdown-opt" id="sort-values" name="sort">
-							<option>Default</option>
-							<option>Recent</option>
-							<option>Most upvoted</option>
+							<option value="0">Default</option>
+							<option value="1">Recent</option>
+							<option value="2">Most upvoted</option>
 							<?php if($logged_in == 1)	{ ?>
-							<option>My posts</option>
+							<option value="3">My posts</option>
 							<?php }	?>
 						</select>
 						<script>

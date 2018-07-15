@@ -54,7 +54,7 @@
 			<li class="side-menu"><a href="<?php echo $slashes_cur; ?>recent" class="list-group-item" >Recent </a></li>
 			<li class="side-menu"><a href="<?php echo $slashes_cur; ?>trending" class="list-group-item" >User activity based</a></li>
 			<li class="side-menu"><a href="<?php echo $slashes_cur; ?>trending" class="list-group-item" >Bookmarks</a></li>
-			<li class="side-menu" id="side-menu-media-opt4"><a href="javascript:void(0)" class="list-group-item" onclick="showTopics('side-menu-topics')" >+ Topic based</a>
+			<!--<li class="side-menu" id="side-menu-media-opt4"><a href="javascript:void(0)" class="list-group-item" onclick="showTopics('side-menu-topics')" >+ Topic based</a>
 				<?php
 				try	{
 					$sql_fetch_topics="select topic_id,topic_desc from topics where parent_topic = 0";
@@ -82,7 +82,7 @@
 					echo 'Error fetching topics';
 				} 
 				?>
-			</li></br>
+			</li>--></br>
 			<ul class="nav nav-pills nav-stacked">
 				<li><a href="<?php echo $slashes_main; ?>profile.php" ><span class="glyphicon glyphicon-user" ></span>&nbsp;My Profile</a></li>
 				<li><a href="<?php echo $slashes_main; ?>dashboard.php"><span class="glyphicon glyphicon-home" ></span>&nbsp;Dashboard</a></li>
@@ -115,7 +115,7 @@
 				<li class="side-menu"><a href="<?php echo $slashes_cur; ?>recent" >Recent </a></li>
 				<li class="side-menu"><a href="<?php echo $slashes_cur; ?>trending" >User activity based </a></li>
 				<li class="side-menu"><a href="<?php echo $slashes_cur; ?>bookmarks.php" >Bookmarks</a></li>
-				<li class="side-menu" id="side-menu-opt4"><a href="javascript:void(0)" onclick="showTopics('side-menu-topics')" >+ Topic based</a>
+			<!--	<li class="side-menu" id="side-menu-opt4"><a href="javascript:void(0)" onclick="showTopics('side-menu-topics')" >+ Topic based</a>
 					<?php
 					try	{
 						$sql_fetch_topics="select topic_id,topic_desc from topics where parent_topic = 0";
@@ -143,6 +143,6 @@
 						echo 'Error fetching topics';
 					} 
 					?>
-				</li>
+				</li>-->
 			</div>
 			</div>
