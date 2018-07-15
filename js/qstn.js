@@ -78,18 +78,28 @@ $(document).ready(function()	{
 			}
 		}
 	});
+   /* $("#check-all").click(function()    {
+        if(this.checked)    {
+            alert("hello");
+            $(".subgroup-sec").attr("disabled","disabled");
+            $(".grp-names").css("color","#ddd");
+        }
+        else    {
+            alert("world");
+            $(".subgroup-sec").removeAttr("disabled");
+            $(".grp-names").css("color","#000");
+        }
+    });*/
 	
 });
 
 function changeSubgroups()  {
-    var id=$("input#check-all");
+    var id=document.getElementById("check-all");
     if(id.checked)    {
-        alert("hello");
         $(".subgroup-sec").attr("disabled","disabled");
         $(".grp-names").css("color","#ddd");
     }
     else    {
-        alert("world");
         $(".subgroup-sec").removeAttr("disabled");
         $(".grp-names").css("color","#000");
     }
