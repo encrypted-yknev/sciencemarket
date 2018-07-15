@@ -48,36 +48,38 @@ $qstn_array=$qstn_arr_str="";
 				<?php
 					try	{
 					$query_string="";
-					$sql = "select a.qstn_id
-	                              ,a.qstn_titl
-                                  ,a.qstn_desc
-                                  ,a.posted_by
-                                  ,a.topic_id
-                                  ,a.up_votes
-                                  ,a.down_votes
-                                  ,a.created_ts
-                                  ,a1.parent_group_id
-                                  ,g.group_nm
-                                  ,group_concat(distinct h.group_nm order by h.group_nm asc separator ',') as subgroups
-                                  
+					$sql = "select      a.qstn_id
+                                       ,a.qstn_titl
+                                       ,a.qstn_desc
+                                       ,a.posted_by
+                                       ,a.up_votes
+                                       ,a.down_votes
+                                       ,a.topic_id
+                                       ,a.created_ts
+                                       ,d.group_id as parent_group_id
+                                       ,d.group_nm
+                                       ,group_concat(distinct c.group_nm order by c.group_nm asc separator ', ') as subgroups 
                             from questions a 
-                            inner join group_posts a1
-                            on a1.post_id = a.qstn_id    
-                            inner join groups g
-                            on g.group_id = a1.parent_group_id
-                            left outer join groups h
-                            on h.group_id = a1.group_id
-                            where a.posted_by='".$_SESSION['user']."' 
+                            inner join group_posts b 
+                            on a.qstn_id = b.post_id 
+                            left outer join groups c 
+                            on c.group_id = b.group_id
+                            and c.subgroup_ind = 'Y' 
+                            left outer join groups d 
+                            on d.group_id = b.parent_group_id 
+                            where a.posted_by = '".$_SESSION['user']."' 
+
                             group by a.qstn_id
-		                            ,a.qstn_titl
-                                    ,a.qstn_desc
-                                    ,a.posted_by
-                                    ,a.topic_id
-                                    ,a.up_votes
-                                    ,a.down_votes
-                                    ,a.created_ts
-                                    ,a1.parent_group_id
-                                    ,g.group_nm
+                                       ,a.qstn_titl
+                                       ,a.qstn_desc
+                                       ,a.posted_by
+                                       ,a.up_votes
+                                       ,a.down_votes
+                                       ,a.topic_id
+                                       ,a.created_ts
+                                       ,d.group_id
+                                       ,d.group_nm
+
                             order by a.created_ts desc limit 10";
 					
 					include "../fetch_answers1.php";
