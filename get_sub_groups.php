@@ -20,7 +20,7 @@ if(!empty($group_id))	{
         $subgroup_all = str_replace(" ",",",trim($subgroup_all));
         
         /* Fetch all subgroups which are visible to logged in user for a given group */
-        $sql_fetch_visbl_subgroups = "select replace(trim(extractvalue(subgroup_visbl_confg,'/subgroups/subgroup_id')),' ',',') as 'subgroups' 
+        $sql_fetch_visbl_subgroups = "select replace(trim(extractvalue(subgroup_hier_confg,'/subgroups/subgroup_id')),' ',',') as 'subgroups' 
                                 from subgroups t1
                                 inner join group_mbr t2
                                 on t1.subgroup_id = t2.subgroup_id
@@ -41,7 +41,7 @@ if(!empty($group_id))	{
                                 where t2.parent_group_id = 1
                                 and t2.subgroup_id in (".$subgroup_ids.")";
                                
-		echo "<input type='checkbox' name='subgroups[]' id='check-all' class='all-sec' value='".$subgroup_all."' onchange='changeSubgroups()' />&nbsp;&nbsp;All</br>";
+		echo "<input type='checkbox' name='subgroups[]' id='check-all' class='all-sec' value='".$subgroup_all."' onclick='changeSubgroups()' />&nbsp;&nbsp;All</br>";
         foreach($conn->query($sql_fetch_group_names) as $row_group)   {
             $group_name = $row_group["group_nm"];
             $group_id = $row_group["group_id"];

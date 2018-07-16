@@ -365,7 +365,8 @@ function get_group_list($subgroup_char) {
                                                inner join group_mbr b
                                                on a.group_id = b.group_id
                                                where a.subgroup_ind='N'
-                                               and b.user_id = '".$_SESSION['user']."'";
+                                               and b.user_id = '".$_SESSION['user']."'
+                                               and a.group_id <> 0";
 							foreach($conn->query($sql_fetch_groups) as $row_groups)	{
 								$row_group_id=$row_groups["group_id"];
 								$row_group_name=$row_groups["group_nm"];

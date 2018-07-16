@@ -72,7 +72,24 @@
 				<?php
 				try	{
 					if(isset($_GET['dboardToken']) and $_GET['dboardToken']=='upvoted')	{
-						$sql="select * from questions order by up_votes desc";
+						$sql="select a.qstn_id
+	                               ,a.qstn_titl
+                                   ,a.qstn_desc
+	                               ,a.posted_by
+	                               ,a.up_votes
+	                               ,a.down_votes
+	                               ,a.topic_id
+	                               ,a.created_ts
+	                               ,b.parent_group_id
+                                   ,d.group_nm as group_nm
+	                               ,' ' as subgroups 
+                             from questions a 
+                             inner join group_posts b 
+                             on a.qstn_id = b.post_id 
+                             and b.parent_group_id = 0
+                             inner join groups d 
+                             on d.group_id = b.parent_group_id 
+                             order by a.up_votes desc";
 						?>
 						<script>
 							$("#mup-link-db").addClass("active-link");
@@ -80,7 +97,24 @@
 						<?php
 					}
 					else	{
-						$sql="select * from questions order by created_ts desc";
+						$sql="select a.qstn_id
+	                               ,a.qstn_titl
+                                   ,a.qstn_desc
+	                               ,a.posted_by
+	                               ,a.up_votes
+	                               ,a.down_votes
+	                               ,a.topic_id
+	                               ,a.created_ts
+	                               ,b.parent_group_id
+                                   ,d.group_nm as group_nm
+	                               ,' ' as subgroups 
+                             from questions a 
+                             inner join group_posts b 
+                             on a.qstn_id = b.post_id 
+                             and b.parent_group_id = 0
+                             inner join groups d 
+                             on d.group_id = b.parent_group_id 
+                             order by a.created_ts desc limit";
 						?>
 						<script>
 							$("#recent-link-db").addClass("active-link");
