@@ -67,6 +67,9 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 					/* Logic starts for INBT email check */				
 					/* Check which subgroup user belongs to  */
 					#$sql_check_subgroup="select code_typ from codevalues where code_val='EMAILID' and code_desc='".trim($mail)."'";
+                    $sql_add_mbr_public="insert into group_mbr (user_id,group_id,created_by,last_updt_by) 
+											   values ('".$userid."',0,'admin','admin')";
+    			    $conn->exec($sql_add_mbr_public);
                     $sql_check_subgroup="select * from email_address where email_addr='".trim($mail)."'";                        
 					$stmt_check_subgroup=$conn->prepare($sql_check_subgroup);
 					$stmt_check_subgroup->execute();
@@ -92,7 +95,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")	{
 				}
 				catch(PDOException $e)	{
 					// Debug only $message = $e->getMessage();
-					$message = "Uh oh something went wrong, please try again ".$e->getMessage();
+					$message = "Uh oh something went wrong, please try again ";
 				}
 			}
 			else{
