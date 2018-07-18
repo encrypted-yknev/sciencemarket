@@ -1,0 +1,290 @@
+<manifest alg="2" build="2018.0.0.379" opt="false" iceEnabled="true" iceMarkupVersion="2" iceEnabledOptions="link,responsive,cachebuster,textStyling" exportTarget="other" domain="responsive-muse.com" resolutions="1x" timestamp="1531867935161">
+  <folder name="css">
+    <file name="site_global.css" crc="329460111"/>
+    <file name="master_a-master.css" crc="4154830067" ref="index"/>
+    <file name="nomq_preview_master_a-master.css" crc="4285585919" ref="index"/>
+    <file name="index.css" crc="3794358428" ref="index"/>
+    <file name="nomq_index.css" crc="311466451" ref="index"/>
+    <file name="iefonts_index.css" crc="3840800959" ref="index"/>
+  </folder>
+  <folder name="scripts">
+    <file name="jquery-1.8.3.min.js" crc="209076791" ref="index"/>
+    <file name="museutils.js" crc="3803043152" ref="index"/>
+    <file name="whatinput.js" crc="86476730" ref="index"/>
+    <file name="museconfig.js" crc="380897831" ref="index"/>
+    <file name="jquery.watch.js" crc="99325471" ref="index"/>
+    <file name="webpro.js" crc="242022427" ref="index"/>
+    <file name="musewpslideshow.js" crc="457073769" ref="index"/>
+    <file name="jquery.museoverlay.js" crc="483674903" ref="index"/>
+    <file name="touchswipe.js" crc="4066113679" ref="index"/>
+    <file name="jquery.museresponsive.js" crc="3955820958" ref="index"/>
+    <file name="require.js" crc="4157109226" ref="index"/>
+    <file name="jquery.musepolyfill.bgsize.js" crc="4148998990" ref="index"/>
+  </folder>
+  <folder name="images">
+    <file name="blank.gif" crc="4208392903" ref="index"/>
+    <file name="collaborate-crop-u10912.png" crc="45861465" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect illustrations-crop-u12370.png" crc="4017727430" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect illustrations-crop-u123702.png" crc="3765953093" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect illustrations-crop-u123703.png" crc="4199757669" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect illustrations-crop-u123704.png" crc="17046288" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect illustrations-crop-u123705.png" crc="3933395933" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="dashboard.png" crc="3845003119" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="jhu.png" crc="501837308" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nyu.png" crc="3997101517" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="inbt.png" crc="4077734016" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="logo-rev-1.png" crc="447713117" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left.png" crc="319456791" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-image.png" crc="4244106274" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor-crop-u633.png" crc="3995220072" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect-crop-u623.png" crc="4006035702" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="hugh herr-crop-u34918.jpg" crc="3787133544" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nina tandon-crop-u34928.jpg" crc="171408513" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor.png" crc="182268131" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="logo1.png" crc="3775879480" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="dashboard505x287.png" crc="81888527" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left-u34374-fr.png" crc="526586135" ref="index"/>
+    <file name="next-button-transparent-image-u34376-fr.png" crc="3988853079" ref="index"/>
+    <file name="favor-crop-u6332.png" crc="109729522" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect-crop-u6232.png" crc="3939640032" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="hugh herr-crop-u349182.jpg" crc="3787133544" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nina tandon-crop-u349282.jpg" crc="171408513" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor281x280.png" crc="238357826" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="dashboard379x215.png" crc="4099379667" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left-u34374-fr2.png" crc="3950784833" ref="index"/>
+    <file name="next-button-transparent-image-u34376-fr2.png" crc="4074217749" ref="index"/>
+    <file name="hugh herr-crop-u349183.jpg" crc="3787133544" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nina tandon-crop-u349283.jpg" crc="171408513" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left-u34374-fr3.png" crc="4172934620" ref="index"/>
+    <file name="next-button-transparent-image-u34376-fr3.png" crc="125009321" ref="index"/>
+    <file name="hugh herr-crop-u349184.jpg" crc="3787133544" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nina tandon-crop-u349284.jpg" crc="171408513" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left-u34374-fr4.png" crc="3921702802" ref="index"/>
+    <file name="next-button-transparent-image-u34376-fr4.png" crc="4100221759" ref="index"/>
+    <file name="hugh herr-crop-u349185.jpg" crc="502494668" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nina tandon-crop-u349285.jpg" crc="4191411124" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nerioxman_0501417_2.jpg" crc="3961414870" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left-u34817-fr.png" crc="4168726299" ref="index"/>
+    <file name="next-button-transparent-image-u34824-fr.png" crc="86977223" ref="index"/>
+    <file name="dashboard474x269.png" crc="335082657" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor148x119.png" crc="507145001" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect148x121.png" crc="483885470" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="collaborate307x295.png" crc="197755304" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor264x263.png" crc="211487776" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="collaborate-crop-u109122.png" crc="3893595659" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor211x210.png" crc="4216001953" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="collaborate-crop-u109123.png" crc="533988178" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor203x202.png" crc="3799832922" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left-u34374-fr5.png" crc="4184012140" ref="index"/>
+    <file name="next-button-transparent-image-u34376-fr5.png" crc="4175696362" ref="index"/>
+    <file name="hugh herr-crop-u349186.jpg" crc="223336780" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nina tandon-crop-u349286.jpg" crc="396687350" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="collaborate-crop-u109124.png" crc="380844175" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="favor159x158.png" crc="286470399" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="expert connect illustrations-crop-u123706.png" crc="236725056" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="dashboard244x139.png" crc="4182693277" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="dashboard191x108.png" crc="3879490986" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="collaborate300x285.png" crc="215467299" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="next-button-transparent-left-u34817-fr2.png" crc="3854745081" ref="index"/>
+    <file name="next-button-transparent-image-u34824-fr2.png" crc="4019323250" ref="index"/>
+    <file name="collaborate-full-crop-u47156.jpg" crc="3934338247" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="collaborate-full-crop-u471562.jpg" crc="93169573" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="collaborate-full148x119.jpg" crc="4007866724" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+      <caption webpage="index" alt=""/>
+    </file>
+    <file name="nerioxman_0501417_2200x200.jpg" crc="4176025654" seo="true" ref="index">
+      <caption webpage="index" alt=""/>
+    </file>
+  </folder>
+  <file name="index.html" crc="4092427688" seo="true" mt="1531867896295" redirect="true"/>
+</manifest>
